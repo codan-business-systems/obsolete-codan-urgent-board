@@ -1,0 +1,29 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="Z_URGENT_BOARD_SRV" xml:lang="en" sap:schema-version="1">
+			<EntityType Name="Item" sap:content-version="1">
+				<Key><PropertyRef Name="id"/></Key><Property Name="id" Type="Edm.String" Nullable="false" MaxLength="10" sap:aggregation-role="dimension" sap:label="INTERFACE_RECORD"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="material" Type="Edm.String" Nullable="false" MaxLength="18" sap:aggregation-role="dimension" sap:label="Material"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="description" Type="Edm.String" Nullable="false" MaxLength="40" sap:aggregation-role="dimension" sap:label="Description"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="type" Type="Edm.String" Nullable="false" MaxLength="1" sap:aggregation-role="dimension" sap:label="Ref Object Type"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="objectkey" Type="Edm.String" Nullable="false" MaxLength="10" sap:aggregation-role="dimension" sap:label="Sales Document"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="line" Type="Edm.String" Nullable="false" MaxLength="6" sap:aggregation-role="dimension" sap:label="Item"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="quantity" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="3" sap:aggregation-role="dimension" sap:unit="uom"
+					sap:label="Quantity" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="uom" Type="Edm.String" Nullable="false" MaxLength="3" sap:aggregation-role="dimension" sap:label="Base Unit"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false" sap:semantics="unit-of-measure"/><Property Name="deleted" Type="Edm.Boolean" Nullable="false" sap:aggregation-role="dimension" sap:label="Deletion Indic."
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="enteredBy" Type="Edm.String" Nullable="false" MaxLength="12" sap:aggregation-role="dimension" sap:label="Created by"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="enteredOn" Type="Edm.DateTime" Precision="7" sap:aggregation-role="dimension" sap:label="Created on" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="enteredAt" Type="Edm.Time" Precision="0" sap:aggregation-role="dimension" sap:label="Created at" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="supplierId" Type="Edm.String" Nullable="false" MaxLength="10" sap:aggregation-role="dimension" sap:label="Vendor"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="dueDate" Type="Edm.DateTime" Precision="7" sap:aggregation-role="dimension" sap:label="Delivery date" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="deliverTo" Type="Edm.String" Nullable="false" MaxLength="80" sap:aggregation-role="dimension" sap:label="Text"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="comments" Type="Edm.String" Nullable="false" sap:aggregation-role="dimension" sap:label="COMMENTS" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="supplierName" Type="Edm.String" Nullable="false" MaxLength="40" sap:aggregation-role="dimension" sap:label="Name"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="enteredByName" Type="Edm.String" Nullable="false" MaxLength="80" sap:aggregation-role="dimension" sap:label="Complete name"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="typeText" Type="Edm.String" Nullable="false" MaxLength="60" sap:aggregation-role="dimension" sap:label="Short text"
+					sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityContainer Name="Z_URGENT_BOARD_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"><EntitySet Name="Items" EntityType="Z_URGENT_BOARD_SRV.Item" sap:creatable="false" sap:updatable="false" sap:deletable="false"
+				sap:pageable="false" sap:addressable="false" sap:content-version="1"/></EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/Z_URGENT_BOARD_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/Z_URGENT_BOARD_SRV/$metadata"/></Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

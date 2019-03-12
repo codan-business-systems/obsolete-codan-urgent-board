@@ -10,11 +10,19 @@
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"sourceTemplate": {
-			"id": "ui5template.basicSAPUI5ApplicationProject",
-			"version": "1.38.11"
+			"id": "servicecatalog.connectivityComponentForManifest",
+			"version": "0.0.0"
+		},
+		"dataSources": {
+			"Z_URGENT_BOARD_SRV": {
+				"uri": "/sap/opu/odata/sap/Z_URGENT_BOARD_SRV/",
+				"type": "OData",
+				"settings": {
+					"localUri": "localService/metadata.xml"
+				}
+			}
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -33,10 +41,8 @@
 		"supportedThemes": [
 			"sap_hcb",
 			"sap_bluecrystal"
-
 		]
 	},
-
 	"sap.ui5": {
 		"rootView": {
 			"viewName": "codan.zurgentboard.view.Main",
@@ -60,12 +66,24 @@
 				"settings": {
 					"bundleName": "codan.zurgentboard.i18n.i18n"
 				}
+			},
+			"": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "OneWay",
+					"defaultCountMode": "Request"
+				},
+				"dataSource": "Z_URGENT_BOARD_SRV",
+				"preload": true
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -77,11 +95,15 @@
 				"controlId": "idAppControl",
 				"clearControlAggregation": false
 			},
-			"routes": [{
-				"name": "RouteMain",
-				"pattern": "RouteMain",
-				"target": ["TargetMain"]
-			}],
+			"routes": [
+				{
+					"name": "RouteMain",
+					"pattern": "RouteMain",
+					"target": [
+						"TargetMain"
+					]
+				}
+			],
 			"targets": {
 				"TargetMain": {
 					"viewType": "XML",

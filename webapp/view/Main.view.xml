@@ -3,7 +3,77 @@
 	<App id="idAppControl">
 		<pages>
 			<Page title="{i18n>title}">
-				<content></content>
+				<content>
+					<Table
+						id="tableMain"
+						width="auto"
+						class="sapUiResponsiveMargin"
+						items="{
+							path: '/Items'
+						}"
+						noDataText="{/tableNoDataText}"
+						busyIndicatorDelay="{/tableBusyDelay}"
+						growing="true"
+						growingScrollToLoad="true"
+						growingThreshold="50"
+						updateFinished="onUpdateFinished">
+		
+						<headerToolbar>
+							<Toolbar>
+								<Title id="tableHeader" text="{/worklistTableTitle}"/>
+								<ToolbarSpacer />
+								<SearchField
+									id="searchField"
+									tooltip="{i18n>worklistSearchTooltip}"
+									search="onSearch"
+									width="auto">
+								</SearchField>
+								<Button icon="sap-icon://drop-down-list" tooltip="Search Settings" press="toggleSearchSettings"/>
+							</Toolbar>
+						</headerToolbar>
+		
+						<columns>
+							<Column id="colMaterial" width="27.5%">
+								<Text text="Material"/>
+							</Column>
+							<Column id="colType">
+								<Text text="Order Type"/>
+							</Column>
+							<Column id="colOrderId">
+								<Text text="Order Id"/>
+							</Column>
+							<Column id="colItemId">
+								<Text text="Item Id"/>
+							</Column>
+							<Column id="colQuantity" hAlign="Right">
+								<Text text="Quantity"/>
+							</Column>
+							<Column id="colDueDate">
+								<Text text="Due"/>
+							</Column>
+							<Column id="colContact">
+								<Text text="Contact"/>
+							</Column>
+						</columns>
+		
+						<items>
+							<ColumnListItem>
+								<cells>
+									<HBox>
+										<ObjectIdentifier title="{material}"/>
+										<Text text=" ({description})" class="zDescription"/>
+									</HBox>
+									<Text text="{typeText}"/>
+									<Text text="{objectkey}"/>
+									<Text text="{line}"/>
+									<ObjectNumber number="{quantity}" unit="{uom}"/>
+									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
+									<Text text="{enteredByName}"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</content>
 			</Page>
 		</pages>
 	</App>
