@@ -1,1 +1,11 @@
-/* Enter your custom styles here */
+.sapUiSizeCompact .sapMListTblCell {
+	height: 1rem;
+}
+
+.sapMListTbl .sapMText, .sapMListTbl .sapMLabel {
+	font-size: 0.75rem;
+}
+
+.zDescription {
+	padding-left: 4px;
+}
