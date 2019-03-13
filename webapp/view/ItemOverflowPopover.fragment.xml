@@ -26,7 +26,6 @@
 							<form:FormElement label="Comments">
 								<form:fields>
 									<TextArea
-										id="textAreaComments"
 										rows="3"
 										value="{comments}"
 										change="onItemFieldChange"

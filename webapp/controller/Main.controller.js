@@ -326,10 +326,9 @@ sap.ui.define([
 			
 			// Merge new value and existing record into update record
 			var oItem = this._oODataModel.getProperty(sItemPath);
-			var oUpdateRec = {};
+			var oUpdateRec = Object.assign({}, oItem);
 			oUpdateRec[sValuePath] = sNewValue;
-			// TODO: Use babel for ES6 Object.assign or switch approach
-			Object.assign(oUpdateRec, oItem);
+			debugger;
 			
 			// Execute update
 			this._oODataModel.update(sItemPath, oUpdateRec, {
