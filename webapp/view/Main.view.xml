@@ -59,6 +59,8 @@
 							<Column id="colContact">
 								<Text text="Contact"/>
 							</Column>
+							<Column>
+							</Column>
 						</columns>
 		
 						<items>
@@ -74,6 +76,13 @@
 									<ObjectNumber number="{quantity}" unit="{uom}"/>
 									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
 									<Text text="{enteredByName}"/>
+									<Button
+										icon="sap-icon://overflow"
+										press="toggleItemOverflowPopover"
+										type="{
+											path: 'comments',
+											formatter: '.formatters.itemOverflowButtonType'
+										}"/>
 								</cells>
 							</ColumnListItem>
 						</items>

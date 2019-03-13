@@ -1,0 +1,49 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:form="sap.ui.layout.form"
+	xmlns:core="sap.ui.core" >
+	<ResponsivePopover
+		busy="{viewModel>/state/busy}"
+		busyIndicatorDelay="0"
+		placement="Left"
+		title="Item details">
+		<content>
+			<form:Form
+				editable="true"
+				class="editableForm">
+				<form:layout>
+					<form:ResponsiveGridLayout
+						labelSpanL="3"
+						labelSpanM="3"
+						emptySpanL="0"
+						emptySpanM="0"
+						columnsL="1"
+						columnsM="1"/>
+				</form:layout>
+				<form:formContainers>
+					<form:FormContainer>
+						<form:formElements>
+							<form:FormElement label="Comments">
+								<form:fields>
+									<TextArea
+										rows="3"
+										value="{comments}"/>
+								</form:fields>
+							</form:FormElement>
+						</form:formElements>
+					</form:FormContainer>
+				</form:formContainers>
+			</form:Form>
+			<MessageStrip
+				class="sapUiResponsiveMargin"
+				visible="{= ${viewModel>/create/message/text} !== '' }"
+				text="{viewModel>/create/message/text}"
+				type="{viewModel>/create/message/type}"/>
+		</content>
+		<endButton>
+			<Button
+				press="closeItemOverflowPopover"
+				text="Close"/>
+		</endButton>
+	</ResponsivePopover>
+</core:FragmentDefinition>

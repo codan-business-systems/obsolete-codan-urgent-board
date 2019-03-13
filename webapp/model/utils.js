@@ -43,6 +43,48 @@ sap.ui.define([
 			}
 			
 			return sErrorMessage;
+		},
+		
+		/**
+		 * Recursively looks for a control in the parents of a control by matching
+		 * the search term against part of the control id or the whole control
+		 * type (class name).
+		 * 
+		 * @params {string} sSearchTerm - Class name or part of id
+		 * @params {sap.ui.core.Control} oChild - Starting point for search
+		 */		
+		findControlInParents: function(sSearchTerm, oChild) {
+			var oMaybeTarget = oChild;
+			while (oMaybeTarget.getMetadata()._sClassName !== sSearchTerm
+				&& oMaybeTarget.getId().indexOf(sSearchTerm) < 0) {
+				oMaybeTarget = oMaybeTarget.getParent();
+				if (!oMaybeTarget) {
+					throw new Error("Could not find parent matching '" + sSearchTerm + "' for control " + oChild.getId());
+				}
+			}
+			return oMaybeTarget;
+		},
+		
+		/**
+		 * Look for a control in an aggregation of controls by matching the search term
+		 * against part of the control id or the whole control type (class name).
+		 * 
+		 * Returns only first instance found.
+		 *
+		 * @params {string} sSearchTerm - Class name or part of id
+		 * @params {sap.ui.core.Control[]} aControls - Array of controls
+
+		 */
+		findControlInAggregation: function(sSearchTerm, aControls) {
+			var oControl;
+			var index = aControls.findIndex(function(oCandidate) {
+				return oCandidate.getId().indexOf(sSearchTerm) > -1
+					|| oCandidate.getMetadata()._sClassName === sSearchTerm;
+			});
+			if (index > -1) {
+				oControl = aControls[index];
+			}
+			return oControl;
 		}		
 	};
 });

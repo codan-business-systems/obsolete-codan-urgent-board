@@ -7,12 +7,13 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	"sap/ui/core/MessageType",
 	"codan/zurgentboard/model/utils",
+	"codan/zurgentboard/model/formatters",
 	"sap/ui/core/ValueState"
-], function (Controller, JSONModel, Filter, FilterOperator, MessageBox, MessageToast, MessageType, utils, ValueState) {
+], function (Controller, JSONModel, Filter, FilterOperator, MessageBox, MessageToast, MessageType, utils, formatters, ValueState) {
 	"use strict";
 
 	return Controller.extend("codan.zurgentboard.controller.Main", {
-
+		formatters: formatters,
 		_searchSettingsPopover: null,
 		
 		onInit: function () {
@@ -216,6 +217,37 @@ sap.ui.define([
 					MessageBox.error(sErrorMessage);
 				}
 			});
+		},
+		
+		toggleItemOverflowPopover: function(oEvent) {
+			var oButton = oEvent.getSource();
+			var oItem = utils.findControlInParents("sap.m.ColumnListItem", oButton);
+			var oPopover = this._getItemOverflowPopover(oItem);
+			if (oPopover.isOpen()) {
+				oPopover.close();
+			} else {
+				oPopover.openBy(oButton);
+			}
+		},
+		
+		closeItemOverflowPopover: function(oEvent) {
+			var oButton = oEvent.getSource();
+			var oPopover =  utils.findControlInParents("sap.m.ResponsivePopover", oButton);
+			oPopover.close();
+		},
+		
+		
+		_getItemOverflowPopover: function(oItem) {
+			// Find or create popover
+			var oPopover;
+			var aDependents = oItem.getAggregation("dependents");
+			if (!aDependents) {
+				oPopover = sap.ui.xmlfragment("codan.zurgentboard.view.ItemOverflowPopover", this);
+				oItem.addDependent(oPopover);
+			} else {
+				oPopover = utils.findControlInAggregation("sap.m.ResponsivePopover", aDependents);
+			}			
+			return oPopover;
 		},
 		
 		onSearch: function() {
