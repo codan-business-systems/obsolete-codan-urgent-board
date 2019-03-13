@@ -1,11 +1,11 @@
-/*.sapUiSizeCompact .sapMListTblCell {*/
-/*	height: 1rem;*/
-/*}*/
+.sapUiSizeCompact .sapMListTblCell {
+	height: 1rem;
+}
 
-/*.sapMListTbl .sapMText, .sapMListTbl .sapMLabel {*/
-/*	font-size: 0.75rem;*/
-/*}*/
+.sapMListTbl .sapMText, .sapMListTbl .sapMLabel {
+	font-size: 0.75rem;
+}
 
-/*.zDescription {*/
-/*	padding-left: 4px;*/
-/*}*/
+.zDescription {
+	padding-left: 4px;
+}
