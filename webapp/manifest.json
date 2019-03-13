@@ -110,6 +110,10 @@
 					"transition": "slide",
 					"clearControlAggregation": false,
 					"viewName": "Main"
+				},
+				"CreateItemDialog": {
+					"viewType": "XML",
+					"viewName": "CreateItemDialog"
 				}
 			}
 		}

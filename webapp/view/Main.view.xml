@@ -22,7 +22,10 @@
 		
 						<headerToolbar>
 							<Toolbar>
-								<Title id="tableHeader" text="{/worklistTableTitle}"/>
+								<Button
+									tooltip="{i18n>createNew}"
+									press="showCreateDialog"
+									icon="sap-icon://create-form"/>
 								<ToolbarSpacer />
 								<SearchField
 									id="searchField"
@@ -78,6 +81,7 @@
 				</content>
 				<dependents>
 					 <core:Fragment fragmentName="codan.zurgentboard.view.SearchSettings" type="XML" />
+					 <core:Fragment fragmentName="codan.zurgentboard.view.CreateItemDialog" type="XML" />
 				</dependents>
 			</Page>
 		</pages>
