@@ -117,5 +117,9 @@
 				}
 			}
 		}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/z_urgent_board/webapp",
+		"_version": "1.1.0"
 	}
 }
