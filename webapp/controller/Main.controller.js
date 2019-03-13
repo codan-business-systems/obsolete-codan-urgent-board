@@ -16,7 +16,7 @@ sap.ui.define([
 		formatters: formatters,
 		_searchSettingsPopover: null,
 		
-		onInit: function () {
+		onInit() {
 			// Get reference to ODataModel
 			this._oODataModel = this.getOwnerComponent().getModel();
 
@@ -123,7 +123,7 @@ sap.ui.define([
 			this.getView().setModel(this._oViewModel, "viewModel");
 		},
 		
-		toggleSearchSettings: function(oEvent) {
+		toggleSearchSettings(oEvent) {
 			var oPopover = this.byId("searchSettingsPopover");
 			if (oPopover.isOpen()) {
 				oPopover.close();
@@ -132,19 +132,19 @@ sap.ui.define([
 			}
 		},
 		
-		showCreateDialog: function() {
+		showCreateDialog() {
 			this._resetCreateForm();
 			var oDialog = this.byId("createItemDialog");
 			oDialog.open();
 		},
 		
-		_resetCreateForm: function() {
+		_resetCreateForm() {
 			this._resetFormFields("/create/fields");
 			this._resetCreateFormMessage();
 		},
 		
-		_resetFormFields: function(sViewModelPath) {
-			var oFields = this._oViewModel.getProperty();
+		_resetFormFields(sViewModelPath) {
+			var oFields = this._oViewModel.getProperty(sViewModelPath);
 			for (var sFieldName in oFields) {
 				var oField = oFields[sFieldName];
 				if (oField.initialValue) {
@@ -155,7 +155,7 @@ sap.ui.define([
 			}
 		},
 		
-		_getCreateFormValues: function() {
+		_getCreateFormValues() {
 			var oFields = this._oViewModel.getProperty("/create/fields");
 			var oValues = {};
 			for (var sFieldName in oFields) {
@@ -165,7 +165,7 @@ sap.ui.define([
 			return oValues;
 		},
 		
-		_validateCreateFormInput: function() {
+		_validateCreateFormInput() {
 			this._resetCreateFormMessage();
 			var bAllValid = true;
 			var oFields = this._oViewModel.getProperty("/create/fields");
@@ -195,20 +195,20 @@ sap.ui.define([
 			return bAllValid;
 		},
 		
-		_setCreateFormMessage: function(oMessageType, sMessageText) {
+		_setCreateFormMessage(oMessageType, sMessageText) {
 			this._oViewModel.setProperty("/create/message/type", oMessageType);
 			this._oViewModel.setProperty("/create/message/text", sMessageText);
 		},
 		
-		_resetCreateFormMessage: function() {
+		_resetCreateFormMessage() {
 			this._setCreateFormMessage(MessageType.None, "");
 		},
 		
-		closeCreateDialog: function() {
+		closeCreateDialog() {
 			this.byId("createItemDialog").close();
 		},
 		
-		createItem: function(oEvent) {
+		createItem() {
 			// Some front end validation for required fields that oData service doesn't give
 			// friendly messages if not provided.
 			if (!this._validateCreateFormInput()) {
@@ -221,12 +221,12 @@ sap.ui.define([
 			var sPath = "/Items";
 			var that = this;
 			this._oODataModel.create(sPath, oNewItemData, {
-				success: function(oData, response) {
+				success: (oData) => {
 					that._setBusy(false);
 					that.closeCreateDialog();	
 					MessageToast.show("Material '" + oData.description + "' added");
 				},
-				error: function(oError) {
+				error: (oError) => {
 					that._setBusy(false);
 					that._oODataModel.resetChanges();
 					var sErrorMessage = utils.parseError(oError, "creating item");
@@ -237,30 +237,30 @@ sap.ui.define([
 		},
 		
 		
-		toggleItemOverflowPopover: function(oEvent) {
+		toggleItemOverflowPopover(oEvent) {
 			var oButton = oEvent.getSource();
 			var oItem = utils.findControlInParents("sap.m.ColumnListItem", oButton);
 			var oPopover = this._getItemOverflowPopover(oItem);
 			if (oPopover.isOpen()) {
 				oPopover.close();
 			} else {
-				this._resetItemOverflowPopover(oPopover);
+				this._resetItemOverflowPopover();
 				oPopover.openBy(oButton);
 			}
 		},
 		
-		closeItemOverflowPopover: function(oEvent) {
+		closeItemOverflowPopover(oEvent) {
 			var oButton = oEvent.getSource();
 			var oPopover =  utils.findControlInParents("sap.m.ResponsivePopover", oButton);
 			oPopover.close();
 		},
 		
-		_resetItemOverflowPopover: function(oPopover) {
+		_resetItemOverflowPopover() {
 			this._oODataModel.resetChanges(); 
 			this._resetFormFields("/itemPopover/fields");
 		},
 	
-		_getItemOverflowPopover: function(oItem) {
+		_getItemOverflowPopover(oItem) {
 			// Find or create popover
 			var oPopover;
 			var aDependents = oItem.getAggregation("dependents");
@@ -273,7 +273,7 @@ sap.ui.define([
 			return oPopover;
 		},
 		
-		onSearch: function() {
+		onSearch() {
 			var aSearchFields = this._oViewModel.getProperty("/search/fields");
 			var sSearchValue = this._oViewModel.getProperty("/search/value");
 			
@@ -281,16 +281,12 @@ sap.ui.define([
 			var aAllFilters = [];
 			if (sSearchValue) {
 				var aFieldFilters = aSearchFields
-					.filter(function (oSearchField){
-						return oSearchField.selected;
-					})
-					.map(function (oSearchField){
-						return new Filter({
-							path: oSearchField.path,
-							operator: FilterOperator.Contains,
-							value1: sSearchValue
-						});
-				});
+					.filter(oSearchField => oSearchField.selected)
+					.map(oSearchField => new Filter({
+						path: oSearchField.path,
+						operator: FilterOperator.Contains,
+						value1: sSearchValue
+					}));
 				
 				// If no field filters active, advise user that nothing will be selected
 				if (!aFieldFilters.length) {
@@ -311,11 +307,11 @@ sap.ui.define([
 			oBinding.filter(aAllFilters);
 		},
 		
-		_setBusy: function(bBusy) {
+		_setBusy(bBusy) {
 			this._oViewModel.setProperty("/state/busy", bBusy);
 		},
 		
-		onItemFieldChange: function(oEvent) {
+		onItemFieldChange(oEvent) {
 			// NOTE the following block currently only works with controls that
 			// have a 'value' property - e.g. sap.m.Input.  It will need
 			// to be enhanced to work with sap.m.Select and some other controls.
@@ -328,15 +324,18 @@ sap.ui.define([
 			var oItem = this._oODataModel.getProperty(sItemPath);
 			var oUpdateRec = Object.assign({}, oItem);
 			oUpdateRec[sValuePath] = sNewValue;
-			debugger;
 			
 			// Execute update
 			this._oODataModel.update(sItemPath, oUpdateRec, {
-				success: function(oData, response) {
-					debugger;
+				success: () => {
+					MessageToast.show("Item updated.");
 				},
-				error: function(oError) {
-					debugger;
+				error: (oError) => {
+					var sValueStatePath = oEventSource.getBinding("valueState").sPath;
+					var sValueStateTextPath = oEventSource.getBinding("valueStateText").sPath;
+					var sMessage = utils.parseError(oError);
+					this._oViewModel.setProperty(sValueStatePath, ValueState.Error);
+					this._oViewModel.setProperty(sValueStateTextPath, sMessage);
 				}
 			});
 		}
