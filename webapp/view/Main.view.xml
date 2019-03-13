@@ -79,6 +79,7 @@
 									<Button
 										icon="sap-icon://overflow"
 										press="toggleItemOverflowPopover"
+										tooltip="Show more item details"
 										type="{
 											path: 'comments',
 											formatter: '.formatters.itemOverflowButtonType'

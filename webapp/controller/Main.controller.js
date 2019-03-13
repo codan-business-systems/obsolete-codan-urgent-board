@@ -25,6 +25,17 @@ sap.ui.define([
 				state: {
 					busy: false
 				},
+				itemPopover: {
+					// Fields in currently open item popover form.  Note: each field will be given additional properties:
+					// 'valueState' and 'valueStateText' by the _resetItemOverflowPopover method.  Fields are bound
+					// directly to the oData model using the 'path' attribute so no values are stored in these properties
+					fields: {
+						comments: {
+							label: "Comments",
+							required: false
+						}
+					}
+				},
 				create: {
 					// Fields on create form.  Note: each field will be given additional properties:
 					// 'value', 'valueState' and 'valueStateText' by the _resetCreateForm method
@@ -128,14 +139,20 @@ sap.ui.define([
 		},
 		
 		_resetCreateForm: function() {
-			var oFields = this._oViewModel.getProperty("/create/fields");
+			this._resetFormFields("/create/fields");
+			this._resetCreateFormMessage();
+		},
+		
+		_resetFormFields: function(sViewModelPath) {
+			var oFields = this._oViewModel.getProperty();
 			for (var sFieldName in oFields) {
 				var oField = oFields[sFieldName];
-				oField.value = oField.initialValue;
+				if (oField.initialValue) {
+					oField.value = oField.initialValue;
+				}
 				oField.valueState = ValueState.None;
 				oField.valueStateText = "";
 			}
-			this._resetCreateFormMessage();
 		},
 		
 		_getCreateFormValues: function() {
@@ -219,6 +236,7 @@ sap.ui.define([
 			});
 		},
 		
+		
 		toggleItemOverflowPopover: function(oEvent) {
 			var oButton = oEvent.getSource();
 			var oItem = utils.findControlInParents("sap.m.ColumnListItem", oButton);
@@ -226,6 +244,7 @@ sap.ui.define([
 			if (oPopover.isOpen()) {
 				oPopover.close();
 			} else {
+				this._resetItemOverflowPopover(oPopover);
 				oPopover.openBy(oButton);
 			}
 		},
@@ -236,7 +255,11 @@ sap.ui.define([
 			oPopover.close();
 		},
 		
-		
+		_resetItemOverflowPopover: function(oPopover) {
+			this._oODataModel.resetChanges(); 
+			this._resetFormFields("/itemPopover/fields");
+		},
+	
 		_getItemOverflowPopover: function(oItem) {
 			// Find or create popover
 			var oPopover;
@@ -290,6 +313,33 @@ sap.ui.define([
 		
 		_setBusy: function(bBusy) {
 			this._oViewModel.setProperty("/state/busy", bBusy);
+		},
+		
+		onItemFieldChange: function(oEvent) {
+			// NOTE the following block currently only works with controls that
+			// have a 'value' property - e.g. sap.m.Input.  It will need
+			// to be enhanced to work with sap.m.Select and some other controls.
+			var oEventSource = oEvent.getSource();
+			var sItemPath = oEventSource.getBindingContext().sPath;
+			var sValuePath = oEventSource.getBinding("value").sPath;
+			var sNewValue = oEventSource.getValue();
+			
+			// Merge new value and existing record into update record
+			var oItem = this._oODataModel.getProperty(sItemPath);
+			var oUpdateRec = {};
+			oUpdateRec[sValuePath] = sNewValue;
+			// TODO: Use babel for ES6 Object.assign or switch approach
+			Object.assign(oUpdateRec, oItem);
+			
+			// Execute update
+			this._oODataModel.update(sItemPath, oUpdateRec, {
+				success: function(oData, response) {
+					debugger;
+				},
+				error: function(oError) {
+					debugger;
+				}
+			});
 		}
 	});
 });

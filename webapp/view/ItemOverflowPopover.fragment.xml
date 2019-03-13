@@ -26,8 +26,12 @@
 							<form:FormElement label="Comments">
 								<form:fields>
 									<TextArea
+										id="textAreaComments"
 										rows="3"
-										value="{comments}"/>
+										value="{comments}"
+										change="onItemFieldChange"
+										valueState="{viewModel>/itemPopover/fields/comments/valueState}"
+										valueStateText="{viewModel>/itemPopover/fields/comments/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>

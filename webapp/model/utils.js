@@ -50,8 +50,9 @@ sap.ui.define([
 		 * the search term against part of the control id or the whole control
 		 * type (class name).
 		 * 
-		 * @params {string} sSearchTerm - Class name or part of id
-		 * @params {sap.ui.core.Control} oChild - Starting point for search
+		 * @param {string} sSearchTerm - Class name or part of id
+		 * @param {sap.ui.core.Control} oChild - Starting point for search
+		 * @returns {sap.ui.core.Control} - Control found
 		 */		
 		findControlInParents: function(sSearchTerm, oChild) {
 			var oMaybeTarget = oChild;
@@ -65,15 +66,19 @@ sap.ui.define([
 			return oMaybeTarget;
 		},
 		
+		onItemFieldChange: function(oEvent) {
+			
+		},
+		
 		/**
 		 * Look for a control in an aggregation of controls by matching the search term
 		 * against part of the control id or the whole control type (class name).
 		 * 
 		 * Returns only first instance found.
 		 *
-		 * @params {string} sSearchTerm - Class name or part of id
-		 * @params {sap.ui.core.Control[]} aControls - Array of controls
-
+		 * @param {string} sSearchTerm - Class name or part of id
+		 * @param {sap.ui.core.Control[]} aControls - Array of controls
+		 * @returns {sap.ui.core.Control} - Control found
 		 */
 		findControlInAggregation: function(sSearchTerm, aControls) {
 			var oControl;
@@ -85,6 +90,6 @@ sap.ui.define([
 				oControl = aControls[index];
 			}
 			return oControl;
-		}		
+		}
 	};
 });
