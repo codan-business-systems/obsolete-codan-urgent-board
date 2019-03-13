@@ -1,3 +1,5 @@
+// SAP generated file
+/* eslint-disable no-unused-vars */
 function initModel() {
 	var sUrl = "/sap/opu/odata/sap/Z_URGENT_BOARD_SRV/";
 	var oModel = new sap.ui.model.odata.ODataModel(sUrl, true);
