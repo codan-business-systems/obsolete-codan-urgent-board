@@ -1,3 +1,5 @@
+/* SAP generated file - disable warnings */
+/* eslint-disable */
 /*global QUnit*/
 
 sap.ui.define([
