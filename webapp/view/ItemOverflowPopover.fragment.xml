@@ -23,35 +23,35 @@
 				<form:formContainers>
 					<form:FormContainer>
 						<form:formElements>
-							<form:FormElement label="{viewModel>/itemPopover/fields/quantity/label}">
+							<form:FormElement label="{viewModel>/fields/quantity/label}">
 								<form:fields>
 									<Input
 										type="Number"
 										value="{quantity}"
 										change="onItemFieldChange"
-										valueState="{viewModel>/itemPopover/fields/quantity/valueState}"
-										valueStateText="{viewModel>/itemPopover/fields/quantity/valueStateText}"/>
+										valueState="{viewModel>/fields/quantity/valueState}"
+										valueStateText="{viewModel>/fields/quantity/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
-							<form:FormElement label="{viewModel>/itemPopover/fields/deliverTo/label}">
+							<form:FormElement label="{viewModel>/fields/deliverTo/label}">
 								<form:fields>
 									<Input
 										type="Text"
 										value="{deliverTo}"
 										change="onItemFieldChange"
-										valueState="{viewModel>/itemPopover/fields/deliverTo/valueState}"
-										valueStateText="{viewModel>/itemPopover/fields/deliverTo/valueStateText}"/>
+										valueState="{viewModel>/fields/deliverTo/valueState}"
+										valueStateText="{viewModel>/fields/deliverTo/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
 
-							<form:FormElement label="{viewModel>/itemPopover/fields/comments/label}">
+							<form:FormElement label="{viewModel>/fields/comments/label}">
 								<form:fields>
 									<TextArea
 										rows="3"
 										value="{comments}"
 										change="onItemFieldChange"
-										valueState="{viewModel>/itemPopover/fields/comments/valueState}"
-										valueStateText="{viewModel>/itemPopover/fields/comments/valueStateText}"/>
+										valueState="{viewModel>/fields/comments/valueState}"
+										valueStateText="{viewModel>/fields/comments/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
 						</form:formElements>

@@ -11,7 +11,7 @@
 			<form:Form
 				editable="true"
 				width="800px"
-				binding="{viewModel>/create/fields}"
+				binding="{viewModel>/fields}"
 				class="editableForm">
 				<form:layout>
 					<form:ResponsiveGridLayout
@@ -43,7 +43,9 @@
 									</Select>
 								</form:fields>
 							</form:FormElement>
-							<form:FormElement label="{viewModel>objectkey/label}">
+							<form:FormElement
+								label="{viewModel>objectkey/label}"
+								visible="{= ${viewModel>type/value} !== ''}">
 								<form:fields>
 									<Input
 										type="Number"
@@ -53,7 +55,9 @@
 
 								</form:fields>
 							</form:FormElement>
-							<form:FormElement label="{viewModel>line/label}">
+							<form:FormElement
+								label="{viewModel>line/label}"
+								visible="{= ${viewModel>type/value} === 'P'}">
 								<form:fields>
 									<Input
 										type="Number"

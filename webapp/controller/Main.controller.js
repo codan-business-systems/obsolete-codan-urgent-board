@@ -25,82 +25,88 @@ sap.ui.define([
 				state: {
 					busy: false
 				},
-				itemPopover: {
-					// Fields in currently open item popover form.  Note: each field will be given additional properties:
-					// 'valueState' and 'valueStateText' by the _resetItemOverflowPopover method.  Fields are bound
-					// directly to the oData model using the 'path' attribute so no values are stored in these properties
-					fields: {
-						comments: {
-							label: "Comments",
-							required: false
-						},
-						quantity: {
-							label: "Quantity",
-							required: true
-						},
-						deliverTo: {
-							label: "Deliver to",
-							required: false
-						}
+				// Fields used in currently open item popover or in the create item dialog.
+				// Note: each field will be given additional properties:
+				// 'value', 'valueState' and 'valueStateText' by the _resetFields method. 
+				// In the case of the Item Popover, controls are bound directly to the oODataModel
+				// and the 'value' is not used.
+				fields: {
+					material: {
+						label: "Material",
+						initialValue: "",
+						required: true,
+						create: true,
+						update: false
 					},
+					type: {
+						label: "Order type",
+						initialValue: "",
+						required: false,
+						noValueState: true,
+						create: true,
+						update: false
+					},
+					objectkey: {
+						label: "Order id",
+						initialValue: "",
+						required: false,
+						create: true,
+						update: false
+					},
+					line: {
+						label: "Item id",
+						initialValue: "",
+						required: false,
+						create: true,
+						update: false
+					},
+					quantity: {
+						initialValue: null,
+						label: "Quantity",
+						required: true,
+						create: true,
+						update: true
+					},
+					uom: {
+						initialValue: "EA",
+						label: "Unit of measure",
+						required: true,
+						create: true,
+						update: false
+					},
+					supplierId: {
+						initialValue: "",
+						label: "Supplier Id",
+						required: false,
+						create: true,
+						update: false
+					},
+					dueDate: {
+						label: "Due date",
+						initialValue: null,
+						required: false,
+						create: true,
+						update: false
+					},
+					deliverTo: {
+						label: "Deliver to",
+						initialValue: "",
+						required: false,
+						create: true,
+						update: true
+					},
+					comments: {
+						label: "Comments",
+						initialValue: "",
+						required: false,
+						create: true,
+						update: true
+					}
+				},
+				itemPopover: {
 					hasError: false // Can't get formatter to refire on change to value state in fields so using this redundant prop
 				},
 				create: {
-					// Fields on create form.  Note: each field will be given additional properties:
-					// 'value', 'valueState' and 'valueStateText' by the _resetCreateForm method
-					fields: {
-						material: {
-							label: "Material",
-							initialValue: "",
-							required: true
-						},
-						type: {
-							label: "Order type",
-							initialValue: "",
-							required: true,
-							noValueState: true
-						},
-						objectkey: {
-							label: "Order id",
-							initialValue: "",
-							required: true
-						},
-						line: {
-							label: "Item id",
-							initialValue: "",
-							required: true
-						},
-						quantity: {
-							initialValue: null,
-							label: "Quantity",
-							required: true
-						},
-						uom: {
-							initialValue: "EA",
-							label: "Unit of measure",
-							required: true
-						},
-						supplierId: {
-							initialValue: "",
-							label: "Supplier Id",
-							required: false
-						},
-						dueDate: {
-							label: "Due date",
-							initialValue: null,
-							required: false
-						},
-						deliverTo: {
-							label: "Deliver to",
-							initialValue: "",
-							required: false
-						},
-						comments: {
-							label: "Comments",
-							initialValue: "",
-							required: false
-						}
-					},
 					message: {
 						type: MessageType.None,
 						text: ""
@@ -148,24 +154,23 @@ sap.ui.define([
 		},
 		
 		_resetCreateForm() {
-			this._resetFormFields("/create/fields");
+			this._resetFields();
 			this._resetCreateFormMessage();
+			this._oViewModel.refresh();
 		},
 		
-		_resetFormFields(sViewModelPath) {
-			var oFields = this._oViewModel.getProperty(sViewModelPath);
+		_resetFields() {
+			var oFields = this._oViewModel.getProperty("/fields");
 			for (var sFieldName in oFields) {
 				var oField = oFields[sFieldName];
-				if (oField.initialValue) {
-					oField.value = oField.initialValue;
-				}
+				oField.value = oField.initialValue;
 				oField.valueState = ValueState.None;
 				oField.valueStateText = "";
 			}
 		},
 		
-		_getCreateFormValues() {
-			var oFields = this._oViewModel.getProperty("/create/fields");
+		_getFieldValues() {
+			var oFields = this._oViewModel.getProperty("/fields");
 			var oValues = {};
 			for (var sFieldName in oFields) {
 				var oFormField = oFields[sFieldName];
@@ -174,16 +179,21 @@ sap.ui.define([
 			return oValues;
 		},
 		
-		_validateCreateFormInput() {
+		/**
+		 * Validate each field that is relevent to the nominated action
+		 * 
+		 * @param {string} sAction - Action: 'create' or 'update'
+		 */
+		_validateFields(sAction) {
 			this._resetCreateFormMessage();
 			var bAllValid = true;
-			var oFields = this._oViewModel.getProperty("/create/fields");
+			var oFields = this._oViewModel.getProperty("/fields");
 			for (var sFieldName in oFields) {
 				var oField = oFields[sFieldName];
 				var bFieldValid = true;
 				
 				// Validate required field	
-				if (oField.required && !oField.value) {
+				if (oField[sAction] && oField.required && !oField.value) {
 					bFieldValid = false;
 					oField.valueState = ValueState.Error;
 					oField.valueStateText = "'" + oField.label + "' is required";
@@ -220,13 +230,13 @@ sap.ui.define([
 		createItem() {
 			// Some front end validation for required fields that oData service doesn't give
 			// friendly messages if not provided.
-			if (!this._validateCreateFormInput()) {
+			if (!this._validateFields('create')) {
 				return;
 			}
 			
 			// Create item
 			this._setBusy(true);
-			var oNewItemData = this._getCreateFormValues();
+			var oNewItemData = this._getFieldValues();
 			var sPath = "/Items";
 			var that = this;
 			this._oODataModel.create(sPath, oNewItemData, {
@@ -273,7 +283,7 @@ sap.ui.define([
 		
 		_resetItemOverflowPopover() {
 			this._oODataModel.resetChanges(); 
-			this._resetFormFields("/itemPopover/fields");
+			this._resetFields();
 			this._oViewModel.setProperty("/itemPopover/hasError", false);
 			this._oViewModel.refresh();
 		},
@@ -383,7 +393,7 @@ sap.ui.define([
 		},
 		
 		_resetErrorFlagItemOverflowPopover() {
-			var oFields = this._oViewModel.getProperty("/itemPopover/fields");
+			var oFields = this._oViewModel.getProperty("/fields");
 			var bHasError = false;
 			for (var sFieldName in oFields) {
 				if (oFields[sFieldName].valueState === ValueState.Error) {
