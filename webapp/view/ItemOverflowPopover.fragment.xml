@@ -23,7 +23,28 @@
 				<form:formContainers>
 					<form:FormContainer>
 						<form:formElements>
-							<form:FormElement label="Comments">
+							<form:FormElement label="{viewModel>/itemPopover/fields/quantity/label}">
+								<form:fields>
+									<Input
+										type="Number"
+										value="{quantity}"
+										change="onItemFieldChange"
+										valueState="{viewModel>/itemPopover/fields/quantity/valueState}"
+										valueStateText="{viewModel>/itemPopover/fields/quantity/valueStateText}"/>
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement label="{viewModel>/itemPopover/fields/deliverTo/label}">
+								<form:fields>
+									<Input
+										type="Text"
+										value="{deliverTo}"
+										change="onItemFieldChange"
+										valueState="{viewModel>/itemPopover/fields/deliverTo/valueState}"
+										valueStateText="{viewModel>/itemPopover/fields/deliverTo/valueStateText}"/>
+								</form:fields>
+							</form:FormElement>
+
+							<form:FormElement label="{viewModel>/itemPopover/fields/comments/label}">
 								<form:fields>
 									<TextArea
 										rows="3"

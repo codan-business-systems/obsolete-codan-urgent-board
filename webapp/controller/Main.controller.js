@@ -33,6 +33,14 @@ sap.ui.define([
 						comments: {
 							label: "Comments",
 							required: false
+						},
+						quantity: {
+							label: "Quantity",
+							required: true
+						},
+						deliverTo: {
+							label: "Deliver to",
+							required: false
 						}
 					},
 					hasError: false // Can't get formatter to refire on change to value state in fields so using this redundant prop

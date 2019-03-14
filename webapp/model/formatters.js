@@ -3,9 +3,9 @@ sap.ui.define([
 ], function (ButtonType) {
 	"use strict";
 	return {
-		itemOverflowButtonType: function(sNotes) {
+		itemOverflowButtonType: function(sNotes, sDeliverTo) {
 			var oButtonType = ButtonType.Default;
-			if (sNotes) {
+			if (sNotes || sDeliverTo) {
 				oButtonType = ButtonType.Emphasized;
 			}
 			return oButtonType;

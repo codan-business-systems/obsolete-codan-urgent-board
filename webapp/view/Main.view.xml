@@ -81,7 +81,7 @@
 										press="toggleItemOverflowPopover"
 										tooltip="Show more item details"
 										type="{
-											path: 'comments',
+											parts: ['comments', 'deliverTo'],
 											formatter: '.formatters.itemOverflowButtonType'
 										}"/>
 								</cells>
