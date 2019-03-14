@@ -1,7 +1,8 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"codan/zurgentboard/model/models"
+	"codan/zurgentboard/model/models",
+	"codan/zurgentboard/model/polyfill/objectAssign"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
