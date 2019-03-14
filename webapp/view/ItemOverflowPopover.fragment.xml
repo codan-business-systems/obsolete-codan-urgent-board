@@ -42,18 +42,22 @@
 				visible="{= ${viewModel>/create/message/text} !== '' }"
 				text="{viewModel>/create/message/text}"
 				type="{viewModel>/create/message/type}"/>
+			<Toolbar>
+				<Button
+					visible="{= !${viewModel>/itemPopover/hasError} }"
+					press="confirmDeleteItem"
+					type="Reject"
+					text="Delete"/>
+				<ToolbarSpacer />
+				<Button
+					visible="{= ${viewModel>/itemPopover/hasError} }"
+					press="cancelItemOverflowPopover"
+					text="Cancel"/>
+				<Button
+					visible="{= !${viewModel>/itemPopover/hasError} }"
+					press="closeItemOverflowPopover"
+					text="OK"/>
+			</Toolbar>
 		</content>
-		<beginButton>
-			<Button
-				visible="{= ${viewModel>/itemPopover/hasError} }"
-				press="cancelItemOverflowPopover"
-				text="Cancel"/>
-		</beginButton>
-		<endButton>
-			<Button
-				visible="{= !${viewModel>/itemPopover/hasError} }"
-				press="closeItemOverflowPopover"
-				text="OK"/>
-		</endButton>
 	</ResponsivePopover>
 </core:FragmentDefinition>

@@ -389,6 +389,36 @@ sap.ui.define([
 			var oListItem = utils.findControlInParents("sap.m.ColumnListItem", oPopover);
 			var oOverflowButton = utils.findControlInAggregation("sap.m.Button", oListItem.getAggregation("cells"));
 			oPopover.openBy(oOverflowButton);
+		},
+		
+		confirmDeleteItem(oEvent) {
+			var oButton = oEvent.getSource();
+			MessageBox.confirm("Are you sure you want to delete this item?", {
+				onClose: (oAction) => {
+					if (oAction === MessageBox.Action.OK) {
+						this._deleteItem(oButton);
+					}
+				}
+			});
+		},
+		
+		_deleteItem(oButton) {
+			var sItemPath = oButton.getBindingContext().sPath;
+			this._setBusy(true);
+			this._oODataModel.remove(sItemPath, {
+				success: () => {
+					this._setBusy(false);
+					MessageToast.show("Item removed");
+					var oPopover = utils.findControlInParents("sap.m.ResponsivePopover", oButton);
+					oPopover.close();
+				},
+				error: (oError) => {
+					this._setBusy(false);
+					this._oDataModel.resetChanges();
+					var sMessage = utils.parseError(oError);
+					MessageBox.error(sMessage);
+				}
+			});
 		}
 		
 	});

@@ -1,7 +1,6 @@
 sap.ui.define([
-	"sap/m/ButtonType",
-	"sap/ui/core/ValueState"
-], function (ButtonType, ValueState) {
+	"sap/m/ButtonType"
+], function (ButtonType) {
 	"use strict";
 	return {
 		itemOverflowButtonType: function(sNotes) {
