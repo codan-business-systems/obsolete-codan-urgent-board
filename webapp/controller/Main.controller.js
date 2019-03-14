@@ -34,7 +34,8 @@ sap.ui.define([
 							label: "Comments",
 							required: false
 						}
-					}
+					},
+					hasError: false // Can't get formatter to refire on change to value state in fields so using this redundant prop
 				},
 				create: {
 					// Fields on create form.  Note: each field will be given additional properties:
@@ -255,9 +256,18 @@ sap.ui.define([
 			oPopover.close();
 		},
 		
+		cancelItemOverflowPopover(oEvent) {
+			var oButton = oEvent.getSource();
+			var oPopover =  utils.findControlInParents("sap.m.ResponsivePopover", oButton);
+			this._resetItemOverflowPopover();
+			oPopover.close();
+		},
+		
 		_resetItemOverflowPopover() {
 			this._oODataModel.resetChanges(); 
 			this._resetFormFields("/itemPopover/fields");
+			this._oViewModel.setProperty("/itemPopover/hasError", false);
+			this._oViewModel.refresh();
 		},
 	
 		_getItemOverflowPopover(oItem) {
@@ -311,14 +321,22 @@ sap.ui.define([
 			this._oViewModel.setProperty("/state/busy", bBusy);
 		},
 		
+		_isBusy() {
+			return  this._oViewModel.getProperty("/state/busy");
+		},
+		
 		onItemFieldChange(oEvent) {
 			// NOTE the following block currently only works with controls that
 			// have a 'value' property - e.g. sap.m.Input.  It will need
 			// to be enhanced to work with sap.m.Select and some other controls.
 			var oEventSource = oEvent.getSource();
-			var sItemPath = oEventSource.getBindingContext().sPath;
-			var sValuePath = oEventSource.getBinding("value").sPath;
-			var sNewValue = oEventSource.getValue();
+			if (oEventSource.getValue) {
+				var sItemPath = oEventSource.getBindingContext().sPath;
+				var sValuePath = oEventSource.getBinding("value").sPath;
+				var sNewValue = oEventSource.getValue();
+			} else {
+				throw new Error("'onItemFieldChange' not implemented for control type " + oEventSource.getMetadata()._sClassName);
+			}
 			
 			// Merge new value and existing record into update record
 			var oItem = this._oODataModel.getProperty(sItemPath);
@@ -326,18 +344,52 @@ sap.ui.define([
 			oUpdateRec[sValuePath] = sNewValue;
 			
 			// Execute update
+			var sValueStatePath = oEventSource.getBinding("valueState").sPath;
+			var sValueStateTextPath = oEventSource.getBinding("valueStateText").sPath;
+			this._setBusy(true);
 			this._oODataModel.update(sItemPath, oUpdateRec, {
 				success: () => {
+					this._setBusy(false);
+					this._oViewModel.setProperty(sValueStatePath, ValueState.None);
+					this._oViewModel.setProperty(sValueStateTextPath, "");
+					this._resetErrorFlagItemOverflowPopover();
 					MessageToast.show("Item updated.");
 				},
 				error: (oError) => {
-					var sValueStatePath = oEventSource.getBinding("valueState").sPath;
-					var sValueStateTextPath = oEventSource.getBinding("valueStateText").sPath;
+					this._setBusy(false);
 					var sMessage = utils.parseError(oError);
 					this._oViewModel.setProperty(sValueStatePath, ValueState.Error);
 					this._oViewModel.setProperty(sValueStateTextPath, sMessage);
+					this._resetErrorFlagItemOverflowPopover();
+					
+					// If this update has been triggered by the popover closing, then
+					// reopen it preserving state so value state / message can be 
+					// reviewed by the user
+					var oPopover = utils.findControlInParents("sap.m.ResponsivePopover", oEventSource);
+					if (!oPopover.isOpen()) {
+						this._reopenPopoverPreservingState(oPopover);
+					}
+					this._oViewModel.refresh();
 				}
 			});
+		},
+		
+		_resetErrorFlagItemOverflowPopover() {
+			var oFields = this._oViewModel.getProperty("/itemPopover/fields");
+			var bHasError = false;
+			for (var sFieldName in oFields) {
+				if (oFields[sFieldName].valueState === ValueState.Error) {
+					bHasError = true;
+				}
+			}
+			this._oViewModel.setProperty("/itemPopover/hasError", bHasError);
+		},
+
+		_reopenPopoverPreservingState(oPopover) {
+			var oListItem = utils.findControlInParents("sap.m.ColumnListItem", oPopover);
+			var oOverflowButton = utils.findControlInAggregation("sap.m.Button", oListItem.getAggregation("cells"));
+			oPopover.openBy(oOverflowButton);
 		}
+		
 	});
 });

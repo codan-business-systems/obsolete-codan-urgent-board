@@ -66,10 +66,6 @@ sap.ui.define([
 			return oMaybeTarget;
 		},
 		
-		onItemFieldChange: function(oEvent) {
-			
-		},
-		
 		/**
 		 * Look for a control in an aggregation of controls by matching the search term
 		 * against part of the control id or the whole control type (class name).
@@ -81,6 +77,9 @@ sap.ui.define([
 		 * @returns {sap.ui.core.Control} - Control found
 		 */
 		findControlInAggregation: function(sSearchTerm, aControls) {
+			if (!Array.isArray(aControls)) {
+				throw new Error("Invalid parameter 'aControls' - expected an array");
+			}
 			var oControl;
 			var index = aControls.findIndex(function(oCandidate) {
 				return oCandidate.getId().indexOf(sSearchTerm) > -1

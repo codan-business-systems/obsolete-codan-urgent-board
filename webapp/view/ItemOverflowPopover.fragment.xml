@@ -43,10 +43,17 @@
 				text="{viewModel>/create/message/text}"
 				type="{viewModel>/create/message/type}"/>
 		</content>
+		<beginButton>
+			<Button
+				visible="{= ${viewModel>/itemPopover/hasError} }"
+				press="cancelItemOverflowPopover"
+				text="Cancel"/>
+		</beginButton>
 		<endButton>
 			<Button
+				visible="{= !${viewModel>/itemPopover/hasError} }"
 				press="closeItemOverflowPopover"
-				text="Close"/>
+				text="OK"/>
 		</endButton>
 	</ResponsivePopover>
 </core:FragmentDefinition>

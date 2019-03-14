@@ -1,3 +1,7 @@
+/**
+ * SAP generated file
+ */
+/* eslint-disable */
 sap.ui.define([
 	"sap/ui/test/Opa5",
 	"codan/zurgentboard/test/integration/pages/Common",
