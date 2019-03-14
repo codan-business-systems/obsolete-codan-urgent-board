@@ -258,7 +258,6 @@ sap.ui.define([
 					that._oODataModel.resetChanges();
 					var sErrorMessage = utils.parseError(oError, "creating item");
 					that._setCreateFormMessage(MessageType.Error, sErrorMessage);
-					MessageBox.error(sErrorMessage);
 				}
 			});
 		},

@@ -58,12 +58,7 @@
 					</form:FormContainer>
 				</form:formContainers>
 			</form:Form>
-			<MessageStrip
-				class="sapUiResponsiveMargin"
-				visible="{= ${viewModel>/create/message/text} !== '' }"
-				text="{viewModel>/create/message/text}"
-				type="{viewModel>/create/message/type}"/>
-			<Toolbar>
+			<Toolbar class="sapUiSmallMarginBeginEnd">
 				<Button
 					visible="{= !${viewModel>/itemPopover/hasError} }"
 					press="sendItemEmail"
