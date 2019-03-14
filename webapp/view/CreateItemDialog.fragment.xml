@@ -57,7 +57,7 @@
 							</form:FormElement>
 							<form:FormElement
 								label="{viewModel>line/label}"
-								visible="{= ${viewModel>type/value} === 'P'}">
+								visible="{= ${viewModel>type/value} === 'P' || ${viewModel>type/value} === 'S' }">
 								<form:fields>
 									<Input
 										type="Number"

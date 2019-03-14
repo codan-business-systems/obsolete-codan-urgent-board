@@ -34,73 +34,53 @@ sap.ui.define([
 					material: {
 						label: "Material",
 						initialValue: "",
-						required: true,
-						create: true,
-						update: false
+						required: true
 					},
 					type: {
 						label: "Order type",
 						initialValue: "",
 						required: false,
-						noValueState: true,
-						create: true,
-						update: false
+						noValueState: true
 					},
 					objectkey: {
 						label: "Order id",
 						initialValue: "",
-						required: false,
-						create: true,
-						update: false
+						required: item => item.type !== ""
 					},
 					line: {
 						label: "Item id",
 						initialValue: "",
-						required: false,
-						create: true,
-						update: false
+						required: item => item.type === "P" || item.type === "S"
 					},
 					quantity: {
 						initialValue: null,
 						label: "Quantity",
-						required: true,
-						create: true,
-						update: true
+						required: true
 					},
 					uom: {
 						initialValue: "EA",
 						label: "Unit of measure",
-						required: true,
-						create: true,
-						update: false
+						required: true
 					},
 					supplierId: {
 						initialValue: "",
 						label: "Supplier Id",
-						required: false,
-						create: true,
-						update: false
+						required: false
 					},
 					dueDate: {
 						label: "Due date",
 						initialValue: null,
-						required: false,
-						create: true,
-						update: false
+						required: false
 					},
 					deliverTo: {
 						label: "Deliver to",
 						initialValue: "",
-						required: false,
-						create: true,
-						update: true
+						required: false
 					},
 					comments: {
 						label: "Comments",
 						initialValue: "",
-						required: false,
-						create: true,
-						update: true
+						required: false
 					}
 				},
 				itemPopover: {
@@ -188,20 +168,29 @@ sap.ui.define([
 		},
 		
 		/**
-		 * Validate each field that is relevent to the nominated action
-		 * 
-		 * @param {string} sAction - Action: 'create' or 'update'
+		 * Validate each field before creating the item
 		 */
-		_validateFields(sAction) {
+		_validateFieldsBeforeCreate() {
 			this._resetCreateFormMessage();
 			var bAllValid = true;
 			var oFields = this._oViewModel.getProperty("/fields");
+			var oAllItemValues = this._getFieldValues();
 			for (var sFieldName in oFields) {
 				var oField = oFields[sFieldName];
 				var bFieldValid = true;
 				
+				// Determine if field is required
+				var bRequired;
+				if (typeof oField.required === "function") {
+					// Call function with all item values to determine if required
+					bRequired = oField.required(oAllItemValues);
+				} else {
+					// Assume boolean flag
+					bRequired = oField.required;
+				}
+				
 				// Validate required field	
-				if (oField[sAction] && oField.required && !oField.value) {
+				if (bRequired && !oField.value) {
 					bFieldValid = false;
 					oField.valueState = ValueState.Error;
 					oField.valueStateText = "'" + oField.label + "' is required";
@@ -238,7 +227,7 @@ sap.ui.define([
 		createItem() {
 			// Some front end validation for required fields that oData service doesn't give
 			// friendly messages if not provided.
-			if (!this._validateFields('create')) {
+			if (!this._validateFieldsBeforeCreate()) {
 				return;
 			}
 			
@@ -246,18 +235,17 @@ sap.ui.define([
 			this._setBusy(true);
 			var oNewItemData = this._getFieldValues();
 			var sPath = "/Items";
-			var that = this;
 			this._oODataModel.create(sPath, oNewItemData, {
 				success: (oData) => {
-					that._setBusy(false);
-					that.closeCreateDialog();	
+					this._setBusy(false);
+					this.closeCreateDialog();	
 					MessageToast.show("Material '" + oData.description + "' added");
 				},
 				error: (oError) => {
-					that._setBusy(false);
-					that._oODataModel.resetChanges();
+					this._setBusy(false);
+					this._oODataModel.resetChanges();
 					var sErrorMessage = utils.parseError(oError, "creating item");
-					that._setCreateFormMessage(MessageType.Error, sErrorMessage);
+					this._setCreateFormMessage(MessageType.Error, sErrorMessage);
 				}
 			});
 		},
