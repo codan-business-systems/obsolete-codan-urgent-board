@@ -66,9 +66,15 @@
 			<Toolbar>
 				<Button
 					visible="{= !${viewModel>/itemPopover/hasError} }"
+					press="sendItemEmail"
+					icon="sap-icon://email"
+					tooltip="Send email regarding this item"/>
+				<Button
+					visible="{= !${viewModel>/itemPopover/hasError} }"
 					press="confirmDeleteItem"
+					icon="sap-icon://delete"
 					type="Reject"
-					text="Delete"/>
+					tooltip="Delete item"/>
 				<ToolbarSpacer />
 				<Button
 					visible="{= ${viewModel>/itemPopover/hasError} }"

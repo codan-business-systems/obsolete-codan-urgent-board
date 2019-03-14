@@ -153,6 +153,14 @@ sap.ui.define([
 			oDialog.open();
 		},
 		
+		sendItemEmail(oEvent) {
+			var oButton = oEvent.getSource();
+			var sItemPath = oButton.getBindingContext().sPath;
+			var oItem = this._oODataModel.getProperty(sItemPath);
+			var sSubject = "Urgent Board material " + oItem.material;
+			sap.m.URLHelper.triggerEmail("", sSubject, "");
+		},
+		
 		_resetCreateForm() {
 			this._resetFields();
 			this._resetCreateFormMessage();
