@@ -134,11 +134,50 @@ sap.ui.define([
 		},
 		
 		sendItemEmail(oEvent) {
+			// Get item 
 			var oButton = oEvent.getSource();
 			var sItemPath = oButton.getBindingContext().sPath;
 			var oItem = this._oODataModel.getProperty(sItemPath);
-			var sSubject = "Urgent Board material " + oItem.material;
-			sap.m.URLHelper.triggerEmail("", sSubject, "");
+			
+			// Replace undefined values in oItem with "" into oData
+			var oData = {};
+			Object.entries(oItem)
+				.forEach(([key, value]) => {
+					if (value) {
+						oData[key] = value;
+					} else {
+						oData[key] = '';
+					}
+				});
+				
+			// Build email content
+			var sSubject = `Urgent Board material ${oData.material}`;
+			if (oData.comments) {
+				sSubject = `${sSubject}: ${oData.comments}`;
+			}
+			var aLines = [
+				`Material:  ${oData.material} (${oData.description})`,
+				`Quantity:  ${oData.quantity} ${oData.uom}`,
+				`Due:  ${oData.dueDate}`,
+				`Contact:  ${oData.enteredByName}`,
+				`Deliver to:  ${oData.deliverTo}`,
+				`Comments:  ${oData.comments}`
+			];
+			
+			// If we have an order, insert details below material
+			if (oData.type) {
+				var sOrderText = `${oData.typeText}:  ${oData.objectkey}`;
+				aLines.splice(1, 0, sOrderText);
+				if (oData.line) {
+					var sLineText = `Item id: ${Number(oData.line)}`;
+					aLines.splice(2, 0, sLineText);
+				}
+			}
+			var sBody = aLines.join("\n");
+			
+			// Create email in outlook
+			sap.m.URLHelper.triggerEmail("", sSubject, sBody);
+			MessageToast.show("New draft email opened in Outlook");
 		},
 		
 		_resetCreateForm() {
