@@ -92,6 +92,7 @@ sap.ui.define([
 						text: ""
 					}
 				},
+				selectedCount: 0,
 				referenceTypes: [{
 					id: "",
 					description: ""
@@ -116,6 +117,12 @@ sap.ui.define([
 				}
 			});
 			this.getView().setModel(this._oViewModel, "viewModel");
+		},
+		
+		onTableSelectionChange(oEvent) {
+			var oTable = oEvent.getSource();
+			var aSelectedItems = oTable.getSelectedItems();
+			this._oViewModel.setProperty("/selectedCount", aSelectedItems.length);
 		},
 		
 		toggleSearchSettings(oEvent) {
@@ -146,7 +153,7 @@ sap.ui.define([
 					if (value) {
 						oData[key] = value;
 					} else {
-						oData[key] = '';
+						oData[key] = "";
 					}
 				});
 				

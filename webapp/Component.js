@@ -10,7 +10,8 @@ sap.ui.define([
 	return UIComponent.extend("codan.zurgentboard.Component", {
 
 		metadata: {
-			manifest: "json"
+			manifest: "json",
+			includes: ["css/style.css"]
 		},
 
 		/**
