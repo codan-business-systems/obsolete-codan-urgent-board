@@ -154,18 +154,32 @@ sap.ui.define([
 				return;
 			}
 			
+			// Get item data for selected items
+			const aItemData = oSelectedItems
+				.map(oTableItem => oTableItem.getBindingContextPath())
+				.map(sPath => this._oODataModel.getProperty(sPath));
+			
+			// Build default recipients
+			const sRecipients = aItemData
+				.map(oItemData => oItemData.enteredBy)
+				.reduce((aUnique, sUserId) => {
+					if (!aUnique.includes(sUserId)) {
+						aUnique.push(sUserId);
+					}
+					return aUnique;
+				}, [])
+				.join("; ");
+			
 			// Build email content
 			const sSubject = "Urgent Board materials";
 			const sItemSeparator = "\n***********************************************************************\n";
-			let sBody = oSelectedItems
-				.map(oTableItem => oTableItem.getBindingContextPath())
-				.map(sPath => this._oODataModel.getProperty(sPath))
+			let sBody = aItemData
 				.map(oItemData => this._getEmailBodyForItem(oItemData))
 				.join(sItemSeparator);
 			sBody = `${sItemSeparator}${sBody}${sItemSeparator}`;
 			
 			// Create email in outlook
-			sap.m.URLHelper.triggerEmail("", sSubject, sBody);
+			sap.m.URLHelper.triggerEmail(sRecipients, sSubject, sBody);
 			MessageToast.show("New draft email opened in Outlook");
 		},
 		
@@ -183,7 +197,7 @@ sap.ui.define([
 			const sBody = this._getEmailBodyForItem(oItemData);
 			
 			// Create email in outlook
-			sap.m.URLHelper.triggerEmail("", sSubject, sBody);
+			sap.m.URLHelper.triggerEmail(oItemData.enteredBy, sSubject, sBody);
 			MessageToast.show("New draft email opened in Outlook");
 		},
 		
