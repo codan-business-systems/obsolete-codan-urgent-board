@@ -88,15 +88,6 @@
 					</form:FormContainer>
 					<form:FormContainer>
 						<form:formElements>
-							<form:FormElement label="{viewModel>supplierId/label}">
-								<form:fields>
-									<Input
-										type="Text"
-										value="{viewModel>supplierId/value}"
-										valueState="{viewModel>supplierId/valueState}"
-										valueStateText="{viewModel>supplierId/valueStateText}"/>
-								</form:fields>
-							</form:FormElement>
 							<form:FormElement label="{viewModel>dueDate/label}">
 								<form:fields>
 									<DatePicker

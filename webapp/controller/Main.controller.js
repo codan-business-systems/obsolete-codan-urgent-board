@@ -62,11 +62,6 @@ sap.ui.define([
 						label: "Unit of measure",
 						required: true
 					},
-					supplierId: {
-						initialValue: "",
-						label: "Supplier Id",
-						required: false
-					},
 					dueDate: {
 						label: "Due date",
 						initialValue: null,

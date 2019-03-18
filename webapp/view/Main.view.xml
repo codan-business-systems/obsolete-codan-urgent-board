@@ -82,6 +82,9 @@
 							<Column id="colContact">
 								<Text text="Contact"/>
 							</Column>
+							<Column id="colSupplier" width="22.5%">
+								<Text text="Supplier"/>
+							</Column>
 							<Column>
 							</Column>
 						</columns>
@@ -99,6 +102,15 @@
 									<ObjectNumber number="{quantity}" unit="{uom}"/>
 									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
 									<Text text="{enteredByName}"/>
+									<HBox>
+										<ObjectIdentifier title="{supplierId}"/>
+										<Text
+											class="zDescription"
+											text="{
+												path: 'supplierName',
+												formatter: '.formatters.supplierNameText'
+											}"/>
+									</HBox>
 									<Button
 										icon="sap-icon://overflow"
 										press="toggleItemOverflowPopover"
