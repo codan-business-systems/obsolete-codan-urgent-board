@@ -320,10 +320,11 @@ sap.ui.define([
 					this._setBusy(false);
 					this.closeCreateDialog();	
 					MessageToast.show("Material '" + oData.description + "' added");
+					this._resetODataModel();
 				},
 				error: (oError) => {
 					this._setBusy(false);
-					this._oODataModel.resetChanges();
+					this._resetODataModel();
 					var sErrorMessage = utils.parseError(oError, "creating item");
 					this._setCreateFormMessage(MessageType.Error, sErrorMessage);
 				}
@@ -357,10 +358,15 @@ sap.ui.define([
 		},
 		
 		_resetItemOverflowPopover() {
-			this._oODataModel.resetChanges(); 
+			this._resetODataModel();
 			this._resetFields();
 			this._oViewModel.setProperty("/itemPopover/hasError", false);
 			this._oViewModel.refresh();
+		},
+		
+		_resetODataModel() {
+			this._oODataModel.resetChanges(); 
+			this._oODataModel.setUseBatch(false); 
 		},
 	
 		_getItemOverflowPopover(oItem) {
@@ -447,6 +453,7 @@ sap.ui.define([
 					this._oViewModel.setProperty(sValueStateTextPath, "");
 					this._resetErrorFlagItemOverflowPopover();
 					MessageToast.show("Item updated.");
+					this._resetODataModel();
 				},
 				error: (oError) => {
 					this._setBusy(false);
@@ -504,15 +511,94 @@ sap.ui.define([
 					MessageToast.show("Item removed");
 					var oPopover = utils.findControlInParents("sap.m.ResponsivePopover", oButton);
 					oPopover.close();
+					this._resetODataModel();
 				},
-				error: (oError) => {
-					this._setBusy(false);
-					this._oDataModel.resetChanges();
-					var sMessage = utils.parseError(oError);
-					MessageBox.error(sMessage);
+				error: this._handleSimpleODataError.bind(this)
+			});
+		},
+		
+		_handleSimpleODataError(oError) {
+			this._setBusy(false);
+			this._resetODataModel();
+			var sMessage = utils.parseError(oError);
+			MessageBox.error(sMessage);
+		},
+		
+		confirmDeleteSelectedItems() {
+			var oTable = this.byId("tableMain");
+			var aSelectedItems = oTable.getSelectedItems();
+			MessageBox.confirm(`Are you sure you want to delete ${aSelectedItems.length} item(s)?`, {
+				onClose: (oAction) => {
+					if (oAction === MessageBox.Action.OK) {
+						this._deleteSelectedItems(aSelectedItems);
+					}
 				}
 			});
-		}
+		},
 		
+		_deleteSelectedItems(aSelectedItems) {
+			// Update oDataModel in batch
+			const sDeferredGroupId = "removeSelectedItems";
+			this._oODataModel.setUseBatch(true);
+			this._oODataModel.setDeferredGroups([sDeferredGroupId]);
+			const oRequestParams = {
+				groupId: sDeferredGroupId
+			};
+			aSelectedItems
+				.map(oTableItem => oTableItem.getBindingContextPath())
+				.forEach(sItemPath => {
+					this._oODataModel.remove(sItemPath, oRequestParams);
+				});
+			
+			// Submit changes
+			this._setBusy(true);
+			this._oODataModel.submitChanges({
+				groupId: sDeferredGroupId,
+				success: (oData) => {
+					this._setBusy(false);
+					if (!this._handleBatchResponseAndReturnErrorFlag(oData)) {
+						MessageToast.show(`${aSelectedItems.length} item(s) removed`);
+					}
+					this._resetODataModel();
+				},
+				error: this._handleSimpleODataError.bind(this)
+			});
+		},
+		
+		/**
+		 * Parses the oData return value from a batch submission, handling errors
+		 * and return a flag if any errors were found.
+		 *
+		 * @param {object} oData - oData object returned by 'success' callback
+		 */
+		_handleBatchResponseAndReturnErrorFlag(oData) {
+			let sErrorMessage = "";
+			if (oData && oData.__batchResponses) {
+				for (var x = 0; x < oData.__batchResponses.length; x++) {
+					var oResponse = oData.__batchResponses[x];
+					if ( (oResponse.statusCode && oResponse.statusCode !== "200")
+						|| (!oResponse.statusCode && oResponse.response && oResponse.response.statusCode !== "200")) {
+						try {
+							var response = JSON.parse(oResponse.response.body);
+							if (response.error && response.error.message) {
+								sErrorMessage = response.error.message.value;
+							}
+						} catch (err) {
+							sErrorMessage = "Unexpected error type/format in batch response.";
+						}
+					}
+				}
+			} else {
+				sErrorMessage = "Unexpected problem / missing data in batch response.";
+			}
+			
+			// Handle error
+			if (sErrorMessage) {
+				MessageBox.error(sErrorMessage);
+				return true;
+			} else {
+				return false;
+			}
+		}
 	});
 });
