@@ -29,6 +29,11 @@
 									visible="{= ${viewModel>/selectedCount} > 0 }"
 									text="{viewModel>/selectedCount} item(s) selected"/>
 								<Button
+									tooltip="{i18n>sendEmailForSelected}"
+									press="sendSelectedItemsEmail"
+									visible="{= ${viewModel>/selectedCount} > 0 }"
+									icon="sap-icon://email"/>
+								<Button
 									tooltip="{i18n>createNew}"
 									press="showCreateDialog"
 									visible="{= ${viewModel>/selectedCount} === 0 }"

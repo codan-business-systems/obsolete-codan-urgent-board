@@ -140,15 +140,57 @@ sap.ui.define([
 			oDialog.open();
 		},
 		
+		sendSelectedItemsEmail() {
+			const oTable = this.byId("tableMain");
+			const oSelectedItems = oTable.getSelectedItems();
+			
+			// Testing reveals that large number of items selected (e.g. 10 or 51) doesn't work - no feedback or response
+			// is given from sap.m.URLHelper.triggerEmail.  So limit to 5 materials for now - finding the
+			// actual limit would require painstaking testing because it may differ on different machines and will
+			// probably turn out to be a limit on the body content size in bytes and not the number of items.
+			const nMaxItems = 5;
+			if (oSelectedItems.length > nMaxItems) {
+				MessageBox.warning("Too many items selected for sending email.  Please limit your selection to " + nMaxItems);
+				return;
+			}
+			
+			// Build email content
+			const sSubject = "Urgent Board materials";
+			const sItemSeparator = "\n***********************************************************************\n";
+			let sBody = oSelectedItems
+				.map(oTableItem => oTableItem.getBindingContextPath())
+				.map(sPath => this._oODataModel.getProperty(sPath))
+				.map(oItemData => this._getEmailBodyForItem(oItemData))
+				.join(sItemSeparator);
+			sBody = `${sItemSeparator}${sBody}${sItemSeparator}`;
+			
+			// Create email in outlook
+			sap.m.URLHelper.triggerEmail("", sSubject, sBody);
+			MessageToast.show("New draft email opened in Outlook");
+		},
+		
 		sendItemEmail(oEvent) {
 			// Get item 
 			var oButton = oEvent.getSource();
 			var sItemPath = oButton.getBindingContext().sPath;
-			var oItem = this._oODataModel.getProperty(sItemPath);
+			var oItemData = this._oODataModel.getProperty(sItemPath);
 			
-			// Replace undefined values in oItem with "" into oData
-			var oData = {};
-			Object.entries(oItem)
+			// Build email content
+			const sSubject = `Urgent Board material ${oItemData.material}`;
+			if (oItemData.comments) {
+				sSubject = `${sSubject}: ${oItemData.comments}`;
+			}
+			const sBody = this._getEmailBodyForItem(oItemData);
+			
+			// Create email in outlook
+			sap.m.URLHelper.triggerEmail("", sSubject, sBody);
+			MessageToast.show("New draft email opened in Outlook");
+		},
+		
+		_getEmailBodyForItem(oItemData) {
+			// Replace undefined values in oItemData with "" into oData
+			const oData = {};
+			Object.entries(oItemData)
 				.forEach(([key, value]) => {
 					if (value) {
 						oData[key] = value;
@@ -157,11 +199,6 @@ sap.ui.define([
 					}
 				});
 				
-			// Build email content
-			var sSubject = `Urgent Board material ${oData.material}`;
-			if (oData.comments) {
-				sSubject = `${sSubject}: ${oData.comments}`;
-			}
 			var aLines = [
 				`Material:  ${oData.material} (${oData.description})`,
 				`Quantity:  ${oData.quantity} ${oData.uom}`,
@@ -180,11 +217,8 @@ sap.ui.define([
 					aLines.splice(2, 0, sLineText);
 				}
 			}
-			var sBody = aLines.join("\n");
-			
-			// Create email in outlook
-			sap.m.URLHelper.triggerEmail("", sSubject, sBody);
-			MessageToast.show("New draft email opened in Outlook");
+
+			return aLines.join("\n");
 		},
 		
 		_resetCreateForm() {
