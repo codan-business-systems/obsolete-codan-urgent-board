@@ -1,0 +1,87 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<ResponsivePopover
+		id="sortSettingsPopover"
+		placement="Bottom"
+		class="sapUiResponsiveMargin"
+		showHeader="false">
+		<content>
+			<Table
+				id="sortSettingsList"
+				items="{viewModel>/sort/fields}"
+				width="325px">
+				<columns>
+					<Column>
+					</Column>
+					<Column width="32px">
+					</Column>
+					<Column width="32px">
+					</Column>
+					<Column width="4px">
+					</Column>
+					<Column width="32px"
+						visible="{
+							path: 'viewModel>/sort/activeFieldCount',
+							formatter: '.formatters.modifyActiveSortColumnVisible'
+						}">
+					</Column>
+					<Column width="32px"
+						visible="{
+							path: 'viewModel>/sort/activeFieldCount',
+							formatter: '.formatters.modifyActiveSortColumnVisible'
+						}">
+					</Column>
+					<Column width="32px"
+						visible="{
+							path: 'viewModel>/sort/activeFieldCount',
+							formatter: '.formatters.modifyActiveSortColumnVisible'
+						}">
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Inactive">
+						<cells>
+							<ObjectIdentifier title="{viewModel>label}"/>
+							<Button
+								type="{= ${viewModel>sortAscending} ? 'Emphasized' : 'Default' }"
+								icon="sap-icon://sort-ascending"
+								tooltip="Sort ascending"
+								press="onPressSortAscending"/>
+							<Button
+								type="{= ${viewModel>sortDescending} ? 'Emphasized' : 'Default' }"
+								icon="sap-icon://sort-descending"
+								tooltip="Sort descending"
+								press="onPressSortDescending"/>
+							<Text text=""/>
+							<Button
+								visible="{
+									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
+									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
+								}"
+								tooltip="Cancel sorting by this field"
+								icon="sap-icon://decline"
+								press="onPressSortRemove" />
+							<Button
+								visible="{
+									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
+									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
+								}"
+								enabled="{viewModel>canMoveUp}"
+								tooltip="Move field up in sort order"
+								icon="sap-icon://up"
+								press="onPressSortMoveUp" />
+							<Button
+								visible="{
+									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
+									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
+								}"
+								enabled="{viewModel>canMoveDown}"
+								tooltip="Move field down in sort order"
+								icon="sap-icon://down"
+								press="onPressSortMoveDown" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</ResponsivePopover>
+</core:FragmentDefinition>

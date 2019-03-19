@@ -45,14 +45,22 @@
 									visible="{= ${viewModel>/selectedCount} === 0 }"
 									icon="sap-icon://create-form"/>
 								<ToolbarSpacer />
+								<Button
+									icon="sap-icon://sort"
+									visible="{= ${viewModel>/selectedCount} === 0 }"
+									tooltip="Sort columns"
+									press="toggleSortSettings"/>
 								<SearchField
 									id="searchField"
+									class="sapUiNoMarginEnd"
 									value="{viewModel>/search/value}"
 									visible="{= ${viewModel>/selectedCount} === 0 }"
 									search="onSearch"
 									width="auto">
 								</SearchField>
 								<Button
+									class="sapUiNoMarginBegin"
+									type="Emphasized"
 									icon="sap-icon://drop-down-list"
 									visible="{= ${viewModel>/selectedCount} === 0 }"
 									tooltip="Search Settings"
@@ -125,6 +133,7 @@
 					</Table>
 				</content>
 				<dependents>
+					 <core:Fragment fragmentName="codan.zurgentboard.view.SortSettings" type="XML" />
 					 <core:Fragment fragmentName="codan.zurgentboard.view.SearchSettings" type="XML" />
 					 <core:Fragment fragmentName="codan.zurgentboard.view.CreateItemDialog" type="XML" />
 				</dependents>

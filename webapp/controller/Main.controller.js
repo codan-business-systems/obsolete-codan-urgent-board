@@ -8,13 +8,13 @@ sap.ui.define([
 	"sap/ui/core/MessageType",
 	"codan/zurgentboard/model/utils",
 	"codan/zurgentboard/model/formatters",
-	"sap/ui/core/ValueState"
-], function (Controller, JSONModel, Filter, FilterOperator, MessageBox, MessageToast, MessageType, utils, formatters, ValueState) {
+	"sap/ui/core/ValueState",
+	"sap/ui/model/Sorter"
+], function (Controller, JSONModel, Filter, FilterOperator, MessageBox, MessageToast, MessageType, utils, formatters, ValueState, Sorter) {
 	"use strict";
 
 	return Controller.extend("codan.zurgentboard.controller.Main", {
 		formatters: formatters,
-		_searchSettingsPopover: null,
 		
 		onInit() {
 			// Get reference to ODataModel
@@ -32,30 +32,40 @@ sap.ui.define([
 				// and the 'value' is not used.
 				fields: {
 					material: {
-						label: "Material",
+						label: "Part Number",
 						initialValue: "",
-						required: true
+						required: true,
+						canSearch: true,
+						searchSelected: true,
+						canSort: true,
+						initialSortPosition: 0
 					},
 					type: {
 						label: "Order type",
 						initialValue: "",
 						required: false,
-						noValueState: true
+						noValueState: true,
+						canSort: true
 					},
 					objectkey: {
 						label: "Order id",
 						initialValue: "",
-						required: item => item.type !== ""
+						canSearch: true,
+						searchSelected: true,
+						required: item => item.type !== "",
+						canSort: true
 					},
 					line: {
 						label: "Item id",
 						initialValue: "",
-						required: item => item.type === "P" || item.type === "S"
+						required: item => item.type === "P" || item.type === "S",
+						canSort: true
 					},
 					quantity: {
 						initialValue: null,
 						label: "Quantity",
-						required: true
+						required: true,
+						canSort: true
 					},
 					uom: {
 						initialValue: "EA",
@@ -65,17 +75,31 @@ sap.ui.define([
 					dueDate: {
 						label: "Due date",
 						initialValue: null,
-						required: false
+						required: false,
+						canSort: true
 					},
 					deliverTo: {
 						label: "Deliver to",
 						initialValue: "",
-						required: false
+						required: false,
+						canSort: true
 					},
 					comments: {
 						label: "Comments",
 						initialValue: "",
 						required: false
+					},
+					description: {
+						label: "Part Description",
+						canSearch: true,
+						searchSelected: true,
+						canSort: true
+					},
+					enteredByName: {
+						label: "Contact",
+						canSearch: true,
+						searchSelected: true,
+						canSort: true
 					}
 				},
 				itemPopover: {
@@ -103,15 +127,77 @@ sap.ui.define([
 				}],
 				search: {
 					value: "",
-					fields: [
-						{ text: "Part Number", selected: true, path: "material" },
-						{ text: "Part Description", selected: true, path: "description" },
-						{ text: "Order Id", selected: true, path: "objectkey" },
-						{ text: "Contact", selected: true, path: "enteredByName" }
-					]
+					fields: [] // populated in _initSearchFields()
+				},
+				sort: {
+					fields: [], // populated in _initSortFields()
+					activeFieldCount: 0 // populated in _updateSortActiveFieldCount()
 				}
 			});
 			this.getView().setModel(this._oViewModel, "viewModel");
+			
+			this._initSearchFields();
+			this._initSortFields();
+		},
+		
+		/**
+		 * Builds property 'search/fields' in view model based on field
+		 * metadata in property '/fields'
+		 */
+		_initSearchFields() {
+			var oFields = this._oViewModel.getProperty("/fields");
+			var aSearchFields = Object.entries(oFields)
+				.filter(([, oField]) => oField.canSearch)
+				.map(([sKey, oField]) => Object.assign({ path: sKey }, oField));
+			this._oViewModel.setProperty("/search/fields", aSearchFields);
+		},
+		
+		/**
+		 * Builds property 'sort/fields' in view model based on field
+		 * metadata in property '/fields'
+		 */
+		_initSortFields() {
+			var oFields = this._oViewModel.getProperty("/fields");
+			var aSortFields = Object.entries(oFields)
+				// Filter out unsortable fields
+				.filter(([, oField]) => oField.canSort)
+				// Build sort field object from key and field data returned
+				.map(([sKey, oField]) => ({
+					path: sKey,
+					label: oField.label,
+					initialPosition: oField.initialSortPosition,
+					sortAscending: false, // May be changed by user
+					sortDescending: false, // May be changed by user
+					canMoveUp: false,	// Will be set in _setSortFieldCanMove()
+					canMoveDown: false	// Will be set in _setSortFieldCanMove()
+				}))
+				// Sort by initial sort position
+				.sort((oA, oB) => oA.initialPosition - oB.initialPosition)
+				// Set 'canMoveUp' and 'canMoveDown'
+				.map(this._setSortFieldCanMove);
+			this._oViewModel.setProperty("/sort/fields", aSortFields);
+			this._updateSortActiveFieldCount(aSortFields);
+		},
+		
+		_setSortFieldCanMove(oField, nIndex, aFields) {
+			if (oField.sortAscending || oField.sortDescending) {
+				if (nIndex > 0) {
+					oField.canMoveUp = true;
+				} else {
+					oField.canMoveUp = false;
+				}
+				
+				const oNextField = aFields[nIndex + 1];
+				if (oNextField && (oNextField.sortAscending || oNextField.sortDescending)) {
+					oField.canMoveDown = true;
+				} else {
+					oField.canMoveDown = false;
+				}
+			} else {
+				oField.canMoveUp = false;
+				oField.canMoveDown = false;
+			}
+			return oField;
 		},
 		
 		onTableSelectionChange(oEvent) {
@@ -122,6 +208,15 @@ sap.ui.define([
 		
 		toggleSearchSettings(oEvent) {
 			var oPopover = this.byId("searchSettingsPopover");
+			if (oPopover.isOpen()) {
+				oPopover.close();
+			} else {
+				oPopover.openBy(oEvent.getSource());
+			}
+		},
+		
+		toggleSortSettings(oEvent) {
+			var oPopover = this.byId("sortSettingsPopover");
 			if (oPopover.isOpen()) {
 				oPopover.close();
 			} else {
@@ -399,7 +494,7 @@ sap.ui.define([
 			var aAllFilters = [];
 			if (sSearchValue) {
 				var aFieldFilters = aSearchFields
-					.filter(oSearchField => oSearchField.selected)
+					.filter(oSearchField => oSearchField.searchSelected)
 					.map(oSearchField => new Filter({
 						path: oSearchField.path,
 						operator: FilterOperator.Contains,
@@ -608,6 +703,126 @@ sap.ui.define([
 			} else {
 				return false;
 			}
+		},
+		
+		onPressSortAscending(oEvent) {
+			this._onPressSortDirection("ASC", oEvent);
+		},
+		
+		onPressSortDescending(oEvent) {
+			this._onPressSortDirection("DESC", oEvent);
+		},
+		
+		onPressSortRemove(oEvent) {
+			this._onPressSortDirection("", oEvent);
+		},
+		
+		onPressSortMoveDown(oEvent) {
+			this._onPressSortMovePosition(1, oEvent);
+		},
+		
+		onPressSortMoveUp(oEvent) {
+			this._onPressSortMovePosition(-1, oEvent);
+		},
+		
+		_onPressSortMovePosition(nChange, oEvent) {
+			const oButton = oEvent.getSource();
+			const sSelectedFieldPath = oButton.getBindingContext("viewModel").sPath;
+			let oSelectedField = this._oViewModel.getProperty(sSelectedFieldPath);
+			const aSortFields = this._oViewModel.getProperty("/sort/fields");
+			const nIndex = aSortFields.findIndex(oSortField => oSortField.path === oSelectedField.path);
+			const nNewIndex = nIndex + nChange;
+			if (nNewIndex > -1 && nNewIndex < aSortFields.length) {
+				// Swap position of selected and target postion fields
+				this._swapArrayElements(nIndex, nNewIndex, aSortFields);
+				
+				// Update 'canMoveUp/Down' properties of all fields
+				aSortFields.forEach(this._setSortFieldCanMove);
+				
+				this._oViewModel.refresh();		
+				this._updateTableSort(aSortFields);
+			}
+		},
+		
+		_onPressSortDirection(sDirection, oEvent) {
+			// Get sort fields and remember current state
+			const aSortFields = this._oViewModel.getProperty("/sort/fields");
+			const nIndexFirstInactive = aSortFields.findIndex(oField => !oField.sortAscending && !oField.sortDescending);
+			const nIndexLastActive = nIndexFirstInactive - 1;
+			
+			// Get sort field clicked on
+			const oButton = oEvent.getSource();
+			const sSelectedPath = oButton.getBindingContext("viewModel").sPath;
+			const oSelected = this._oViewModel.getProperty(sSelectedPath);
+			const nSelectedIndex = aSortFields.findIndex(oField => oField.path === oSelected.path);
+			
+			// Move sort field according to old and new active
+			const bOldActive = oSelected.sortAscending || oSelected.sortDescending;
+			const bNewActive = sDirection;
+			if (!bOldActive && bNewActive) {
+				// 	If making active, move element up to end of active elements
+				this._swapArrayElements(nSelectedIndex, nIndexFirstInactive, aSortFields);
+			} else if (bOldActive && !bNewActive) {
+				// If making inactive, move element down until it is first inactive element
+				for (let x = nSelectedIndex; x < nIndexLastActive; x++) {
+					this._swapArrayElements(x, x + 1, aSortFields);
+				}
+			}
+			
+			// Update sort direction
+			switch (sDirection) {
+				case "ASC":
+					oSelected.sortAscending = true;
+					oSelected.sortDescending = false;
+					break;
+				case "DESC":
+					oSelected.sortAscending = false;
+					oSelected.sortDescending = true;
+					break;
+				default:
+					oSelected.sortAscending = oSelected.sortDescending = false;
+			}
+			
+			// Update 'canMoveUp/Down' properties of all fields
+			aSortFields.forEach(this._setSortFieldCanMove);
+			
+			// Update 'sort/activeFieldCount' property
+			this._updateSortActiveFieldCount(aSortFields);
+			this._oViewModel.refresh();
+			this._updateTableSort(aSortFields);
+		},
+		
+		_updateSortActiveFieldCount(aSortFields) {
+			const nCount = aSortFields
+				.reduce((nRunningTotal, oField) => {
+					if (oField.sortAscending || oField.sortDescending) {
+						return nRunningTotal + 1;
+					} else {
+						return nRunningTotal;
+					}
+				}, 0);
+			this._oViewModel.setProperty("/sort/activeFieldCount", nCount);
+		},
+		
+		_swapArrayElements(nIndexA, nIndexB, aArray) {
+			let oTemporary = aArray[nIndexA];
+			aArray[nIndexA] = aArray[nIndexB];
+			aArray[nIndexB] = oTemporary;
+		},
+		
+		_updateTableSort(aSortFields) {
+			// Build sorters for each active sort field
+			var aSorters = aSortFields
+				.filter(oSortField => oSortField.sortAscending || oSortField.sortDescending)
+				.map(oSortField => new Sorter({
+					path: oSortField.path,
+					descending: oSortField.sortDescending
+				}));
+			
+			// Apply sort
+			var oTable = this.byId("tableMain");
+			var oBinding = oTable.getBinding("items");
+			oBinding.sort(aSorters);
 		}
 	});
 });

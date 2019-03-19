@@ -2,13 +2,16 @@
 	<ResponsivePopover
 		id="searchSettingsPopover"
 		placement="Bottom"
-		class="sapUiResponsiveMargin"
 		showHeader="false">
 		<content>
 			<List id="searchSettingsList" items="{viewModel>/search/fields}">
 				<items>
-					<CustomListItem type="Inactive">
-						<CheckBox text="{viewModel>text}" selected="{viewModel>selected}" select="onSearch"/>
+					<CustomListItem
+						type="Inactive">
+						<CheckBox
+							text="{viewModel>label}"
+							selected="{viewModel>searchSelected}"
+							select="onSearch"/>
 					</CustomListItem>
 				</items>
 			</List>
