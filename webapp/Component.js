@@ -4,7 +4,8 @@ sap.ui.define([
 	"codan/zurgentboard/model/models",
 	"codan/zurgentboard/model/polyfill/objectAssign",
 	"codan/zurgentboard/model/polyfill/objectEntries",
-	"codan/zurgentboard/model/polyfill/arrayFindIndex"
+	"codan/zurgentboard/model/polyfill/arrayFindIndex",
+	"codan/zurgentboard/model/polyfill/arrayIncludes"
 ], function (UIComponent, Device, models) {
 	"use strict";
 
