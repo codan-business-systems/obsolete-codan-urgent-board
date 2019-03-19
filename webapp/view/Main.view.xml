@@ -74,7 +74,7 @@
 						</headerToolbar>
 		
 						<columns>
-							<Column id="colMaterial" width="27.5%">
+							<Column id="colMaterial" width="20%">
 								<Text text="Material"/>
 							</Column>
 							<Column id="colType">
@@ -95,7 +95,7 @@
 							<Column id="colContact">
 								<Text text="Contact"/>
 							</Column>
-							<Column id="colSupplier" width="22.5%">
+							<Column id="colSupplier">
 								<Text text="Supplier"/>
 							</Column>
 							<Column>
@@ -105,25 +105,20 @@
 						<items>
 							<ColumnListItem>
 								<cells>
-									<HBox>
+									<!--Use VBox and extra text over ObjectIdentifier text attribute as there is way-->
+									<!--too much space between title and text in the latter-->
+									<VBox>
 										<ObjectIdentifier title="{material}"/>
 										<Text text=" ({description})" class="zDescription"/>
-									</HBox>
+									</VBox>
 									<Text text="{typeText}"/>
 									<Text text="{objectkey}"/>
 									<Text text="{line}"/>
 									<ObjectNumber number="{quantity}" unit="{uom}"/>
 									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
 									<Text text="{enteredByName}"/>
-									<HBox>
-										<ObjectIdentifier title="{supplierId}"/>
-										<Text
-											class="zDescription"
-											text="{
-												path: 'supplierName',
-												formatter: '.formatters.supplierNameText'
-											}"/>
-									</HBox>
+									<Text
+										text="{supplierName}"/>
 									<Button
 										icon="sap-icon://overflow"
 										press="toggleItemOverflowPopover"

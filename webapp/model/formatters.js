@@ -21,13 +21,6 @@ sap.ui.define([
 				return false;
 			}
 		},
-		supplierNameText(sSupplierName) {
-			if (sSupplierName) {
-				return `(${sSupplierName})`;
-			} else {
-				return "";
-			}
-		},
 		itemOverflowButtonType: function(sNotes, sDeliverTo) {
 			var oButtonType = ButtonType.Default;
 			if (sNotes || sDeliverTo) {
