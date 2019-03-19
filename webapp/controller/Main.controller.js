@@ -200,8 +200,8 @@ sap.ui.define([
 			return oField;
 		},
 		
-		onTableSelectionChange(oEvent) {
-			var oTable = oEvent.getSource();
+		onTableSelectionChange() {
+			var oTable = this.byId("tableMain");
 			var aSelectedItems = oTable.getSelectedItems();
 			this._oViewModel.setProperty("/selectedCount", aSelectedItems.length);
 		},
@@ -251,7 +251,7 @@ sap.ui.define([
 			
 			// Build default recipients
 			const sRecipients = aItemData
-				.map(oItemData => oItemData.enteredBy)
+				.map(oItemData => oItemData.contactEmail)
 				.reduce((aUnique, sUserId) => {
 					if (!aUnique.includes(sUserId)) {
 						aUnique.push(sUserId);
@@ -287,8 +287,13 @@ sap.ui.define([
 			const sBody = this._getEmailBodyForItem(oItemData);
 			
 			// Create email in outlook
-			sap.m.URLHelper.triggerEmail(oItemData.enteredBy, sSubject, sBody);
+			sap.m.URLHelper.triggerEmail(oItemData.contactEmail, sSubject, sBody);
 			MessageToast.show("New draft email opened in Outlook");
+		},
+		
+		clearSelections() {
+			this.byId("tableMain").removeSelections(true);
+			this.onTableSelectionChange();
 		},
 		
 		_getEmailBodyForItem(oItemData) {
