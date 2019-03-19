@@ -541,16 +541,14 @@ sap.ui.define([
 		},
 		
 		onItemFieldChange(oEvent) {
-			// NOTE the following block currently only works with controls that
-			// have a 'value' property - e.g. sap.m.Input.  It will need
-			// to be enhanced to work with sap.m.Select and some other controls.
-			var oEventSource = oEvent.getSource();
-			if (oEventSource.getValue) {
-				var sItemPath = oEventSource.getBindingContext().sPath;
-				var sValuePath = oEventSource.getBinding("value").sPath;
-				var sNewValue = oEventSource.getValue();
+			const oEventSource = oEvent.getSource();
+			const sValuePath = oEventSource.getBinding("value").sPath;
+			const sItemPath = oEventSource.getBindingContext().sPath;
+			let sNewValue;
+			if (oEventSource.getMetadata()._sClassName === "sap.m.DatePicker") {
+				sNewValue = oEventSource.getDateValue();
 			} else {
-				throw new Error("'onItemFieldChange' not implemented for control type " + oEventSource.getMetadata()._sClassName);
+				sNewValue = oEventSource.getValue();
 			}
 			
 			// Merge new value and existing record into update record
