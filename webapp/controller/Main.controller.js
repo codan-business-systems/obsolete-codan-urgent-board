@@ -100,6 +100,12 @@ sap.ui.define([
 						canSearch: true,
 						searchSelected: true,
 						canSort: true
+					},
+					supplierName: {
+						label: "Supplier",
+						canSearch: true,
+						searchSelected: true,
+						canSort: false
 					}
 				},
 				itemPopover: {
