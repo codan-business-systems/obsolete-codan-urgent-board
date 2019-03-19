@@ -43,6 +43,10 @@
 							<HBox class="sapUiNoContentPadding">
 								<Button
 									class="sapUiNoMargin"
+									visible="{
+										parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
+										formatter: '.formatters.modifyActiveSortFieldButtonVisible'
+									}"
 									tooltip="Cancel sorting by this field"
 									icon="sap-icon://decline"
 									press="onPressSortRemove" />
