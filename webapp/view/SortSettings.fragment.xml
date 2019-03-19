@@ -2,35 +2,37 @@
 	<ResponsivePopover
 		id="sortSettingsPopover"
 		placement="Bottom"
-		class="sapUiResponsiveMargin"
+		class="sapUiSizeCompact"
 		showHeader="false">
 		<content>
 			<Table
 				id="sortSettingsList"
+				class="sapUiNoContentPadding"
+				fixedLayout="true"
 				items="{viewModel>/sort/fields}"
 				width="325px">
 				<columns>
-					<Column>
+					<Column width="125px">
 					</Column>
-					<Column width="32px">
+					<Column width="28px">
 					</Column>
-					<Column width="32px">
+					<Column width="28px">
 					</Column>
 					<Column width="4px">
 					</Column>
-					<Column width="32px"
+					<Column width="28px"
 						visible="{
 							path: 'viewModel>/sort/activeFieldCount',
 							formatter: '.formatters.modifyActiveSortColumnVisible'
 						}">
 					</Column>
-					<Column width="32px"
+					<Column width="28px"
 						visible="{
 							path: 'viewModel>/sort/activeFieldCount',
 							formatter: '.formatters.modifyActiveSortColumnVisible'
 						}">
 					</Column>
-					<Column width="32px"
+					<Column width="28px"
 						visible="{
 							path: 'viewModel>/sort/activeFieldCount',
 							formatter: '.formatters.modifyActiveSortColumnVisible'
@@ -40,19 +42,22 @@
 				<items>
 					<ColumnListItem type="Inactive">
 						<cells>
-							<ObjectIdentifier title="{viewModel>label}"/>
+							<Text text="{viewModel>label}"/>
 							<Button
+								class="sapUiNoMargin"
 								type="{= ${viewModel>sortAscending} ? 'Emphasized' : 'Default' }"
 								icon="sap-icon://sort-ascending"
 								tooltip="Sort ascending"
 								press="onPressSortAscending"/>
 							<Button
+								class="sapUiNoMargin"
 								type="{= ${viewModel>sortDescending} ? 'Emphasized' : 'Default' }"
 								icon="sap-icon://sort-descending"
 								tooltip="Sort descending"
 								press="onPressSortDescending"/>
 							<Text text=""/>
 							<Button
+								class="sapUiNoMargin"
 								visible="{
 									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
 									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
@@ -61,6 +66,7 @@
 								icon="sap-icon://decline"
 								press="onPressSortRemove" />
 							<Button
+								class="sapUiNoMargin"
 								visible="{
 									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
 									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
@@ -70,6 +76,7 @@
 								icon="sap-icon://up"
 								press="onPressSortMoveUp" />
 							<Button
+								class="sapUiNoMargin"
 								visible="{
 									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
 									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
