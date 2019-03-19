@@ -88,7 +88,9 @@
 					</form:FormContainer>
 					<form:FormContainer>
 						<form:formElements>
-							<form:FormElement label="{viewModel>dueDate/label}">
+							<form:FormElement
+								label="{viewModel>dueDate/label}"
+								visible="{= ${viewModel>type/value} !== 'P'}">
 								<form:fields>
 									<DatePicker
 										value="{
@@ -102,6 +104,17 @@
 										}"
 										valueState="{viewModel>dueDate/valueState}"
 										valueStateText="{viewModel>dueDate/valueStateText}"/>
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement
+								label="{viewModel>supplierName/label}"
+								visible="{= ${viewModel>type/value} !== 'P'}">
+								<form:fields>
+									<Input
+										type="Text"
+										value="{viewModel>supplierName/value}"
+										valueState="{viewModel>supplierName/valueState}"
+										valueStateText="{viewModel>supplierName/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement label="{viewModel>deliverTo/label}">

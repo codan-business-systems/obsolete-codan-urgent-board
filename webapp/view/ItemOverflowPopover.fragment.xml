@@ -33,6 +33,38 @@
 										valueStateText="{viewModel>/fields/quantity/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
+							<form:FormElement
+								label="{viewModel>/fields/supplierName/label}"
+								visible="{= ${type} !== 'P'}">
+								<form:fields>
+									<Input
+										type="Text"
+										value="{supplierName}"
+										change="onItemFieldChange"
+										valueState="{viewModel>/fields/supplierName/valueState}"
+										valueStateText="{viewModel>/fields/supplierName/valueStateText}"/>
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement
+								label="{viewModel>/fields/dueDate/label}"
+								visible="{= ${type} !== 'P'}">
+								<form:fields>
+									<DatePicker
+										change="onItemFieldChange"
+										value="{
+											path:'dueDate',
+											type:'sap.ui.model.type.Date',
+											formatOptions: {
+												style: 'medium',
+												strictParsing: true,
+												UTC: true
+											}
+										}"
+										valueState="{viewModel>/fields/dueDate/valueState}"
+										valueStateText="{viewModel>/fields/dueDate/valueStateText}"/>
+								</form:fields>
+							</form:FormElement>
+
 							<form:FormElement label="{viewModel>/fields/deliverTo/label}">
 								<form:fields>
 									<Input

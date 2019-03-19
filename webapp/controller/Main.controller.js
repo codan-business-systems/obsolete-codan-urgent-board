@@ -103,6 +103,7 @@ sap.ui.define([
 					},
 					supplierName: {
 						label: "Supplier",
+						initialValue: "",
 						canSearch: true,
 						searchSelected: true,
 						canSort: false
