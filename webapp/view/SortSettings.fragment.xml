@@ -8,31 +8,14 @@
 			<Table
 				id="sortSettingsList"
 				class="sapUiNoContentPadding"
-				fixedLayout="true"
-				items="{viewModel>/sort/fields}"
-				width="325px">
+				fixedLayout="false"
+				items="{viewModel>/sort/fields}">
 				<columns>
-					<Column width="125px">
+					<Column>
 					</Column>
-					<Column width="28px">
+					<Column>
 					</Column>
-					<Column width="28px">
-					</Column>
-					<Column width="4px">
-					</Column>
-					<Column width="28px"
-						visible="{
-							path: 'viewModel>/sort/activeFieldCount',
-							formatter: '.formatters.modifyActiveSortColumnVisible'
-						}">
-					</Column>
-					<Column width="28px"
-						visible="{
-							path: 'viewModel>/sort/activeFieldCount',
-							formatter: '.formatters.modifyActiveSortColumnVisible'
-						}">
-					</Column>
-					<Column width="28px"
+					<Column
 						visible="{
 							path: 'viewModel>/sort/activeFieldCount',
 							formatter: '.formatters.modifyActiveSortColumnVisible'
@@ -43,48 +26,47 @@
 					<ColumnListItem type="Inactive">
 						<cells>
 							<Text text="{viewModel>label}"/>
-							<Button
-								class="sapUiNoMargin"
-								type="{= ${viewModel>sortAscending} ? 'Emphasized' : 'Default' }"
-								icon="sap-icon://sort-ascending"
-								tooltip="Sort ascending"
-								press="onPressSortAscending"/>
-							<Button
-								class="sapUiNoMargin"
-								type="{= ${viewModel>sortDescending} ? 'Emphasized' : 'Default' }"
-								icon="sap-icon://sort-descending"
-								tooltip="Sort descending"
-								press="onPressSortDescending"/>
-							<Text text=""/>
-							<Button
-								class="sapUiNoMargin"
-								visible="{
-									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
-									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
-								}"
-								tooltip="Cancel sorting by this field"
-								icon="sap-icon://decline"
-								press="onPressSortRemove" />
-							<Button
-								class="sapUiNoMargin"
-								visible="{
-									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
-									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
-								}"
-								enabled="{viewModel>canMoveUp}"
-								tooltip="Move field up in sort order"
-								icon="sap-icon://up"
-								press="onPressSortMoveUp" />
-							<Button
-								class="sapUiNoMargin"
-								visible="{
-									parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
-									formatter: '.formatters.modifyActiveSortFieldButtonVisible'
-								}"
-								enabled="{viewModel>canMoveDown}"
-								tooltip="Move field down in sort order"
-								icon="sap-icon://down"
-								press="onPressSortMoveDown" />
+							<HBox class="sapUiNoContentPadding">
+								<Button
+									class="sapUiNoMargin"
+									type="{= ${viewModel>sortAscending} ? 'Emphasized' : 'Default' }"
+									icon="sap-icon://sort-ascending"
+									tooltip="Sort ascending"
+									press="onPressSortAscending"/>
+								<Button
+									class="sapUiNoMargin"
+									type="{= ${viewModel>sortDescending} ? 'Emphasized' : 'Default' }"
+									icon="sap-icon://sort-descending"
+									tooltip="Sort descending"
+									press="onPressSortDescending"/>
+							</HBox>
+							<HBox class="sapUiNoContentPadding">
+								<Button
+									class="sapUiNoMargin"
+									tooltip="Cancel sorting by this field"
+									icon="sap-icon://decline"
+									press="onPressSortRemove" />
+								<Button
+									class="sapUiNoMargin"
+									visible="{
+										parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
+										formatter: '.formatters.modifyActiveSortFieldButtonVisible'
+									}"
+									enabled="{viewModel>canMoveUp}"
+									tooltip="Move field up in sort order"
+									icon="sap-icon://up"
+									press="onPressSortMoveUp" />
+								<Button
+									class="sapUiNoMargin"
+									visible="{
+										parts: ['viewModel>sortAscending', 'viewModel>sortDescending'],
+										formatter: '.formatters.modifyActiveSortFieldButtonVisible'
+									}"
+									enabled="{viewModel>canMoveDown}"
+									tooltip="Move field down in sort order"
+									icon="sap-icon://down"
+									press="onPressSortMoveDown" />
+							</HBox>
 						</cells>
 					</ColumnListItem>
 				</items>
