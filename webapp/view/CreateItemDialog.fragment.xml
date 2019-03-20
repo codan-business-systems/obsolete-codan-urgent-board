@@ -84,9 +84,14 @@
 								<form:fields>
 									<Input
 										type="Number"
+										visible="{= !${viewModel>unlimitedQuantity/value} }"
 										value="{viewModel>quantity/value}"
 										valueState="{viewModel>quantity/valueState}"
 										valueStateText="{viewModel>quantity/valueStateText}"/>
+									<CheckBox
+										text="{viewModel>unlimitedQuantity/label}"
+										selected="{viewModel>unlimitedQuantity/value}"
+										valueState="{viewModel>unlimitedQuantity/valueState}"/>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement label="{viewModel>uom/label}">

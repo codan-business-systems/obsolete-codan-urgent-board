@@ -28,9 +28,15 @@
 									<Input
 										type="Number"
 										value="{quantity}"
+										visible="{= !${unlimitedQuantity} }"
 										change="onItemFieldChange"
 										valueState="{viewModel>/fields/quantity/valueState}"
 										valueStateText="{viewModel>/fields/quantity/valueStateText}"/>
+									<CheckBox
+										text="{viewModel>/fields/unlimitedQuantity/label}"
+										select="onItemFieldChange"
+										selected="{unlimitedQuantity}"
+										valueState="{viewModel>/fields/unlimitedQuantity/valueState}"/>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement

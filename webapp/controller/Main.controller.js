@@ -66,9 +66,14 @@ sap.ui.define([
 					},
 					quantity: {
 						initialValue: null,
-						label: "Quantity",
-						required: true,
+						label: "Quantity required",
+						required: item => !item.unlimitedQuantity,
 						canSort: true
+					},
+					unlimitedQuantity: {
+						initialValue: false,
+						label: "Unlimited",
+						required: false
 					},
 					uom: {
 						initialValue: "EA",
@@ -369,6 +374,7 @@ sap.ui.define([
 			var bAllValid = true;
 			var oFields = this._oViewModel.getProperty("/fields");
 			var oAllItemValues = this._getFieldValues();
+			
 			for (var sFieldName in oFields) {
 				var oField = oFields[sFieldName];
 				var bFieldValid = true;
@@ -549,13 +555,22 @@ sap.ui.define([
 		
 		onItemFieldChange(oEvent) {
 			const oEventSource = oEvent.getSource();
-			const sValuePath = oEventSource.getBinding("value").sPath;
 			const sItemPath = oEventSource.getBindingContext().sPath;
+			let sValuePath;
 			let sNewValue;
+			let sValueStatePath = oEventSource.getBinding("valueState").sPath;
+			let sValueStateTextPath;
 			if (oEventSource.getMetadata()._sClassName === "sap.m.DatePicker") {
+				sValuePath = oEventSource.getBinding("value").sPath;
 				sNewValue = oEventSource.getDateValue();
+				sValueStateTextPath = oEventSource.getBinding("valueStateText").sPath;
+			} else if (oEventSource.getMetadata()._sClassName === "sap.m.CheckBox") {
+				sValuePath = oEventSource.getBinding("selected").sPath;
+				sNewValue = oEventSource.getSelected();
 			} else {
+				sValuePath = oEventSource.getBinding("value").sPath;
 				sNewValue = oEventSource.getValue();
+				sValueStateTextPath = oEventSource.getBinding("valueStateText").sPath;
 			}
 			
 			// Merge new value and existing record into update record
@@ -564,14 +579,14 @@ sap.ui.define([
 			oUpdateRec[sValuePath] = sNewValue;
 			
 			// Execute update
-			var sValueStatePath = oEventSource.getBinding("valueState").sPath;
-			var sValueStateTextPath = oEventSource.getBinding("valueStateText").sPath;
 			this._setBusy(true);
 			this._oODataModel.update(sItemPath, oUpdateRec, {
 				success: () => {
 					this._setBusy(false);
 					this._oViewModel.setProperty(sValueStatePath, ValueState.None);
-					this._oViewModel.setProperty(sValueStateTextPath, "");
+					if (sValueStateTextPath) {
+						this._oViewModel.setProperty(sValueStateTextPath, "");
+					}
 					this._resetErrorFlagItemOverflowPopover();
 					MessageToast.show("Item updated.");
 					this._resetODataModel();
@@ -580,7 +595,9 @@ sap.ui.define([
 					this._setBusy(false);
 					var sMessage = utils.parseError(oError);
 					this._oViewModel.setProperty(sValueStatePath, ValueState.Error);
-					this._oViewModel.setProperty(sValueStateTextPath, sMessage);
+					if (sValueStateTextPath) {
+						this._oViewModel.setProperty(sValueStateTextPath, sMessage);
+					}
 					this._resetErrorFlagItemOverflowPopover();
 					this._oViewModel.refresh();
 					
@@ -613,14 +630,21 @@ sap.ui.define([
 		},
 		
 		confirmDeleteItem(oEvent) {
-			var oButton = oEvent.getSource();
-			MessageBox.confirm("Are you sure you want to delete this item?", {
-				onClose: (oAction) => {
-					if (oAction === MessageBox.Action.OK) {
-						this._deleteItem(oButton);
+			// Check item isn't set to unlimited quantity
+			var oItemValues = this._getFieldValues();
+			if (oItemValues.unlimitedQuanity) {
+				MessageBox.warning("Cannot remove items when 'Unlimited quantity' is set.");
+			} else {
+				// Ask user to confirm
+				var oButton = oEvent.getSource();
+				MessageBox.confirm("Are you sure you want to delete this item?", {
+					onClose: (oAction) => {
+						if (oAction === MessageBox.Action.OK) {
+							this._deleteItem(oButton);
+						}
 					}
-				}
-			});
+				});
+			}
 		},
 		
 		_deleteItem(oButton) {
