@@ -1,6 +1,5 @@
 sap.ui.define([
-	"sap/m/ButtonType"
-], function (ButtonType) {
+], function () {
 	"use strict";
 	return {
 		deliverToAndNotesText(sDeliverTo, sNotes) {
@@ -25,7 +24,10 @@ sap.ui.define([
 			if (sObjectKey) {
 				sText = sObjectKey;
 				if (sLine) {
-					sText = `${sText}/${Number(sLine)}`;
+					const nLine = Number(sLine);
+					if (nLine) {
+						sText = `${sText}/${Number(sLine)}`;
+					}
 				}
 			}
 			return sText;

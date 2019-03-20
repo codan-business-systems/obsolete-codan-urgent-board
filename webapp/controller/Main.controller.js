@@ -62,7 +62,6 @@ sap.ui.define([
 					line: {
 						label: "Item id",
 						initialValue: "",
-						required: item => item.type === "P" || item.type === "S",
 						canSort: true
 					},
 					quantity: {

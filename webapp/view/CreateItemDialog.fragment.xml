@@ -51,6 +51,7 @@
 								<form:fields>
 									<Select
 										selectedKey="{viewModel>type/value}"
+										change="onTypeChange"
 										items="{viewModel>/referenceTypes}">
 										<core:Item key="{viewModel>id}" text="{viewModel>description}" />
 									</Select>
