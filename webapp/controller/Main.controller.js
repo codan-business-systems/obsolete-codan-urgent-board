@@ -287,7 +287,7 @@ sap.ui.define([
 			var oItemData = this._oODataModel.getProperty(sItemPath);
 			
 			// Build email content
-			const sSubject = `Urgent Board material ${oItemData.material}`;
+			let sSubject = `Urgent Board material ${oItemData.material}`;
 			if (oItemData.comments) {
 				sSubject = `${sSubject}: ${oItemData.comments}`;
 			}
