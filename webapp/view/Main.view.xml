@@ -93,6 +93,9 @@
 							<Column id="colContact">
 								<Text text="Contact"/>
 							</Column>
+							<Column id="colDeliverToNotes">
+								<Text text="Deliver to / Notes"/>
+							</Column>
 							<Column>
 							</Column>
 						</columns>
@@ -125,14 +128,14 @@
 									<ObjectNumber number="{quantity}" unit="{uom}"/>
 									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
 									<Text text="{enteredByName}"/>
+									<Text text="{
+										parts: ['deliverTo', 'comments'],
+										formatter: '.formatters.deliverToAndNotesText'
+									}"/>
 									<Button
 										icon="sap-icon://overflow"
 										press="toggleItemOverflowPopover"
-										tooltip="Show more item details"
-										type="{
-											parts: ['comments', 'deliverTo'],
-											formatter: '.formatters.itemOverflowButtonType'
-										}"/>
+										tooltip="Edit item details"/>
 								</cells>
 							</ColumnListItem>
 						</items>

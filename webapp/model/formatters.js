@@ -3,6 +3,23 @@ sap.ui.define([
 ], function (ButtonType) {
 	"use strict";
 	return {
+		deliverToAndNotesText(sDeliverTo, sNotes) {
+			const truncNotesToLen = 40;
+			var aValues = [];
+			if (sDeliverTo) {
+				aValues.push(sDeliverTo);
+			}
+			if (sNotes) {
+				if (aValues.length) {
+					aValues.push(" / ");
+				}
+				aValues.push(sNotes.substr(0, truncNotesToLen));
+				if (sNotes.length > truncNotesToLen) {
+					aValues.push("...");
+				}
+			}
+			return aValues.join("");
+		},
 		orderText(sObjectKey, sLine) {
 			let sText = "";
 			if (sObjectKey) {
@@ -51,13 +68,6 @@ sap.ui.define([
 			} else {
 				return false;
 			}
-		},
-		itemOverflowButtonType: function(sNotes, sDeliverTo) {
-			var oButtonType = ButtonType.Default;
-			if (sNotes || sDeliverTo) {
-				oButtonType = ButtonType.Emphasized;
-			}
-			return oButtonType;
 		}
 	};
 });
