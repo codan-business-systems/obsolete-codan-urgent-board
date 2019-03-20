@@ -48,6 +48,7 @@
 									tooltip="{i18n>createNew}"
 									press="showCreateDialog"
 									visible="{= ${viewModel>/selectedCount} === 0 }"
+									type="Emphasized"
 									icon="sap-icon://create-form"/>
 								<ToolbarSpacer />
 								<Button
@@ -109,7 +110,7 @@
 									<!--too much space between title and text in the latter-->
 									<VBox>
 										<ObjectIdentifier title="{material}"/>
-										<Text text=" ({description})" class="zDescription"/>
+										<Text text="{description}"/>
 									</VBox>
 									<Text text="{typeText}"/>
 									<Text text="{objectkey}"/>

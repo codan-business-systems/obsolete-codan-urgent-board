@@ -34,13 +34,14 @@ sap.ui.define([
 					material: {
 						label: "Part Number",
 						initialValue: "",
-						required: true,
+						required: item => !item.description,
 						canSearch: true,
 						canSort: true,
 						initialSortPosition: 0
 					},
 					description: {
 						label: "Part Description",
+						required: item => !item.material,
 						canSearch: true,
 						canSort: true
 					},
@@ -468,6 +469,7 @@ sap.ui.define([
 			var oButton = oEvent.getSource();
 			var oPopover =  utils.findControlInParents("sap.m.ResponsivePopover", oButton);
 			this._resetItemOverflowPopover();
+			this._resetErrorFlagItemOverflowPopover();
 			oPopover.close();
 		},
 		
@@ -489,11 +491,19 @@ sap.ui.define([
 			var aDependents = oItem.getAggregation("dependents");
 			if (!aDependents) {
 				oPopover = sap.ui.xmlfragment("codan.zurgentboard.view.ItemOverflowPopover", this);
+				oPopover.attachAfterClose(this._preventPopoverCloseIfError.bind(this));
 				oItem.addDependent(oPopover);
 			} else {
 				oPopover = utils.findControlInAggregation("sap.m.ResponsivePopover", aDependents);
 			}			
 			return oPopover;
+		},
+		
+		_preventPopoverCloseIfError(oEvent) {
+			const bHasError = this._oViewModel.getProperty("/itemPopover/hasError");
+			if (bHasError) {
+				this._reopenPopoverPreservingState(oEvent.getSource());
+			}
 		},
 		
 		onSearch() {
@@ -573,6 +583,7 @@ sap.ui.define([
 					this._oViewModel.setProperty(sValueStatePath, ValueState.Error);
 					this._oViewModel.setProperty(sValueStateTextPath, sMessage);
 					this._resetErrorFlagItemOverflowPopover();
+					this._oViewModel.refresh();
 					
 					// If this update has been triggered by the popover closing, then
 					// reopen it preserving state so value state / message can be 
@@ -581,7 +592,6 @@ sap.ui.define([
 					if (!oPopover.isOpen()) {
 						this._reopenPopoverPreservingState(oPopover);
 					}
-					this._oViewModel.refresh();
 				}
 			});
 		},

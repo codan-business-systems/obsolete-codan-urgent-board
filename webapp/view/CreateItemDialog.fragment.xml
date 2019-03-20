@@ -25,13 +25,26 @@
 				<form:formContainers>
 					<form:FormContainer>
 						<form:formElements>
-							<form:FormElement label="{viewModel>material/label}">
+							<form:FormElement
+								label="{viewModel>material/label}"
+								visible="{= !${viewModel>description/value}}">
 								<form:fields>
 									<Input
 										type="Text"
 										value="{viewModel>material/value}"
 										valueState="{viewModel>material/valueState}"
 										valueStateText="{viewModel>material/valueStateText}"/>
+								</form:fields>
+							</form:FormElement>
+							<form:FormElement
+								label="{viewModel>description/label}"
+								visible="{= !${viewModel>material/value}}">
+								<form:fields>
+									<Input
+										type="Text"
+										value="{viewModel>description/value}"
+										valueState="{viewModel>description/valueState}"
+										valueStateText="{viewModel>description/valueStateText}"/>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement label="{viewModel>type/label}">
