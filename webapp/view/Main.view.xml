@@ -78,14 +78,8 @@
 							<Column id="colMaterial" width="20%">
 								<Text text="Material"/>
 							</Column>
-							<Column id="colType">
-								<Text text="Order Type"/>
-							</Column>
-							<Column id="colOrderId">
-								<Text text="Order Id"/>
-							</Column>
-							<Column id="colItemId">
-								<Text text="Item Id"/>
+							<Column id="colOrder">
+								<Text text="Order"/>
 							</Column>
 							<Column id="colQuantity" hAlign="Right">
 								<Text text="Quantity"/>
@@ -112,9 +106,21 @@
 										<ObjectIdentifier title="{material}"/>
 										<Text text="{description}"/>
 									</VBox>
-									<Text text="{typeText}"/>
-									<Text text="{objectkey}"/>
-									<Text text="{line}"/>
+									<HBox>
+										<core:Icon
+											visible="{= !!(${type}) }"
+											tooltip="{typeText}"
+											class="sapUiTinyMarginEnd"
+											src="{
+												path: 'type',
+												formatter: '.formatters.typeIconSrc'
+											}">
+										</core:Icon>
+										<Text text="{
+											parts: ['objectkey', 'line'],
+											formatter: '.formatters.orderText'
+										}"/>
+									</HBox>
 									<ObjectNumber number="{quantity}" unit="{uom}"/>
 									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
 									<Text text="{enteredByName}"/>

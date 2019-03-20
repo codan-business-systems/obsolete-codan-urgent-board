@@ -3,6 +3,37 @@ sap.ui.define([
 ], function (ButtonType) {
 	"use strict";
 	return {
+		orderText(sObjectKey, sLine) {
+			let sText = "";
+			if (sObjectKey) {
+				sText = sObjectKey;
+				if (sLine) {
+					sText = `${sText}/${Number(sLine)}`;
+				}
+			}
+			return sText;
+		},
+		
+		typeIconSrc(sType) {
+			let sSrc;
+			switch (sType) {
+				case "P":
+					// Purchase Order
+					sSrc = "sap-icon://shelf";
+					break;
+				case "S":
+					// Sales Order
+					sSrc = "sap-icon://sales-order-item";
+					break;
+				case "D":
+					// Production Order
+					sSrc = "sap-icon://factory";
+					break;
+				default:
+					sSrc = "sap-icon://question-mark";
+			}
+			return sSrc;
+		},
 		modifyActiveSortColumnVisible(nActiveFieldCount) {
 			// Using formatter for this because complex expression binding
 			// doesn't seem to be updating dynamically
