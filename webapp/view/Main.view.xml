@@ -7,14 +7,14 @@
 	displayBlock="true" xmlns="sap.m">
 	<App id="idAppControl">
 		<pages>
-			<Page title="{i18n>title}">
+			<Page title="{i18n>title}" class="sapUiNoContentPadding">
 				<content>
 					<Table
 						id="tableMain"
 						width="auto"
 						mode="MultiSelect"
 						selectionChange="onTableSelectionChange"
-						class="sapUiResponsiveMargin"
+						class="sapUiNoMargin"
 						items="{
 							path: '/Items',
 							parameters: {
@@ -24,7 +24,7 @@
 						}">
 		
 						<headerToolbar>
-							<Toolbar>
+							<Toolbar class="sapUiNoMargin">
 								<Title
 									visible="{= ${viewModel>/selectedCount} > 0 }"
 									text="{viewModel>/selectedCount} item(s) selected"/>

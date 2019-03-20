@@ -36,9 +36,13 @@ sap.ui.define([
 						initialValue: "",
 						required: true,
 						canSearch: true,
-						searchSelected: true,
 						canSort: true,
 						initialSortPosition: 0
+					},
+					description: {
+						label: "Part Description",
+						canSearch: true,
+						canSort: true
 					},
 					type: {
 						label: "Order type",
@@ -51,7 +55,6 @@ sap.ui.define([
 						label: "Order id",
 						initialValue: "",
 						canSearch: true,
-						searchSelected: true,
 						required: item => item.type !== "",
 						canSort: true
 					},
@@ -89,23 +92,15 @@ sap.ui.define([
 						initialValue: "",
 						required: false
 					},
-					description: {
-						label: "Part Description",
-						canSearch: true,
-						searchSelected: true,
-						canSort: true
-					},
 					enteredByName: {
 						label: "Contact",
 						canSearch: true,
-						searchSelected: true,
 						canSort: true
 					},
 					supplierName: {
 						label: "Supplier",
 						initialValue: "",
 						canSearch: true,
-						searchSelected: true,
 						canSort: false
 					}
 				},
@@ -155,7 +150,10 @@ sap.ui.define([
 			var oFields = this._oViewModel.getProperty("/fields");
 			var aSearchFields = Object.entries(oFields)
 				.filter(([, oField]) => oField.canSearch)
-				.map(([sKey, oField]) => Object.assign({ path: sKey }, oField));
+				.map(([sKey, oField]) => Object.assign({
+					path: sKey,
+					searchSelected: true
+				}, oField));
 			this._oViewModel.setProperty("/search/fields", aSearchFields);
 		},
 		
