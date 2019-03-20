@@ -81,6 +81,9 @@
 							<Column id="colOrder">
 								<Text text="Order"/>
 							</Column>
+							<Column id="colSupplier">
+								<Text text="Supplier"/>
+							</Column>
 							<Column id="colQuantity" hAlign="Right">
 								<Text text="Quantity"/>
 							</Column>
@@ -89,9 +92,6 @@
 							</Column>
 							<Column id="colContact">
 								<Text text="Contact"/>
-							</Column>
-							<Column id="colSupplier">
-								<Text text="Supplier"/>
 							</Column>
 							<Column>
 							</Column>
@@ -121,11 +121,10 @@
 											formatter: '.formatters.orderText'
 										}"/>
 									</HBox>
+									<Text text="{supplierName}"/>
 									<ObjectNumber number="{quantity}" unit="{uom}"/>
 									<Text text="{ path: 'dueDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' } }"/>
 									<Text text="{enteredByName}"/>
-									<Text
-										text="{supplierName}"/>
 									<Button
 										icon="sap-icon://overflow"
 										press="toggleItemOverflowPopover"
