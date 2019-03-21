@@ -2,6 +2,11 @@ sap.ui.define([
 ], function () {
 	"use strict";
 	return {
+		combinedQuantityText(nQuantityRequired, nQuantityIssued, bUnlimitedQuantity) {
+			return `${nQuantityIssued} / ${
+				bUnlimitedQuantity ? "∞" : nQuantityRequired
+			}`;
+		},
 		deliverToAndNotesText(sDeliverTo, sNotes) {
 			const truncNotesToLen = 40;
 			var aValues = [];

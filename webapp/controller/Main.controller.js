@@ -320,7 +320,13 @@ sap.ui.define([
 				
 			var aLines = [
 				`Material:  ${oData.material} (${oData.description})`,
-				`Quantity:  ${oData.quantity} ${oData.uom}`,
+				`Quantity required:  ${
+						oData.unlimitedQuantity ? 'unlimited' : oData.quantity
+					} ${oData.uom}`,
+				`Quantity issued:  ${oData.quantityIssued} ${oData.uom}`,
+				`Quantity remaining:  ${
+						oData.unlimitedQuantity ? 'unlimited' : oData.quantity
+					} ${oData.uom}`,
 				`Due:  ${oData.dueDate}`,
 				`Contact:  ${oData.enteredByName}`,
 				`Deliver to:  ${oData.deliverTo}`,
