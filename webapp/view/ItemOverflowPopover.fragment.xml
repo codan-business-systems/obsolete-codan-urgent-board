@@ -1,6 +1,7 @@
 <core:FragmentDefinition
 	xmlns="sap.m"
 	xmlns:form="sap.ui.layout.form"
+	xmlns:layout="sap.ui.layout"
 	xmlns:core="sap.ui.core" >
 	<ResponsivePopover
 		busy="{viewModel>/state/busy}"
@@ -31,12 +32,20 @@
 										visible="{= !${unlimitedQuantity} }"
 										change="onItemFieldChange"
 										valueState="{viewModel>/fields/quantity/valueState}"
-										valueStateText="{viewModel>/fields/quantity/valueStateText}"/>
+										valueStateText="{viewModel>/fields/quantity/valueStateText}">
+										<layoutData>
+											<layout:GridData span="L2 M2 S4" />
+										</layoutData>
+									</Input>
 									<CheckBox
 										text="{viewModel>/fields/unlimitedQuantity/label}"
 										select="onItemFieldChange"
 										selected="{unlimitedQuantity}"
-										valueState="{viewModel>/fields/unlimitedQuantity/valueState}"/>
+										valueState="{viewModel>/fields/unlimitedQuantity/valueState}">
+										<layoutData>
+											<layout:GridData span="L2 M2 S4" />
+										</layoutData>
+									</CheckBox>
 								</form:fields>
 							</form:FormElement>
 							<form:FormElement
