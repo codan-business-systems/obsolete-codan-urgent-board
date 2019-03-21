@@ -77,7 +77,7 @@ sap.ui.define([
 						required: false
 					},
 					quantityIssued: {
-						initialValue: 0,
+						initialValue: "0",
 						label: "Quantity issued"
 					},
 					uom: {
