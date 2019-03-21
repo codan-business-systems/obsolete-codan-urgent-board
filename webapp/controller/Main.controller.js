@@ -41,6 +41,7 @@ sap.ui.define([
 					},
 					description: {
 						label: "Part Description",
+						initialValue: "",
 						required: item => !item.material,
 						canSearch: true,
 						canSort: true
@@ -103,6 +104,7 @@ sap.ui.define([
 					},
 					enteredByName: {
 						label: "Contact",
+						initialValue: "",
 						canSearch: true,
 						canSort: true
 					},
@@ -449,6 +451,7 @@ sap.ui.define([
 			this._setBusy(true);
 			var oNewItemData = this._getFieldValues();
 			var sPath = "/Items";
+			this._oODataModel.setUseBatch(false);
 			this._oODataModel.create(sPath, oNewItemData, {
 				success: (oData) => {
 					this._setBusy(false);
@@ -594,6 +597,7 @@ sap.ui.define([
 			
 			// Execute update
 			this._setBusy(true);
+			this._oODataModel.setUseBatch(false);
 			this._oODataModel.update(sItemPath, oUpdateRec, {
 				success: () => {
 					this._setBusy(false);
@@ -658,6 +662,7 @@ sap.ui.define([
 		_deleteItem(oButton) {
 			var sItemPath = oButton.getBindingContext().sPath;
 			this._setBusy(true);
+			this._oODataModel.setUseBatch(false);
 			this._oODataModel.remove(sItemPath, {
 				success: () => {
 					this._setBusy(false);
