@@ -630,21 +630,15 @@ sap.ui.define([
 		},
 		
 		confirmDeleteItem(oEvent) {
-			// Check item isn't set to unlimited quantity
-			var oItemValues = this._getFieldValues();
-			if (oItemValues.unlimitedQuanity) {
-				MessageBox.warning("Cannot remove items when 'Unlimited quantity' is set.");
-			} else {
-				// Ask user to confirm
-				var oButton = oEvent.getSource();
-				MessageBox.confirm("Are you sure you want to delete this item?", {
-					onClose: (oAction) => {
-						if (oAction === MessageBox.Action.OK) {
-							this._deleteItem(oButton);
-						}
+			// Ask user to confirm
+			var oButton = oEvent.getSource();
+			MessageBox.confirm("Are you sure you want to delete this item?", {
+				onClose: (oAction) => {
+					if (oAction === MessageBox.Action.OK) {
+						this._deleteItem(oButton);
 					}
-				});
-			}
+				}
+			});
 		},
 		
 		_deleteItem(oButton) {
