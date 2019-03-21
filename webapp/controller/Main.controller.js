@@ -75,6 +75,10 @@ sap.ui.define([
 						label: "Unlimited",
 						required: false
 					},
+					quantityIssued: {
+						initialValue: 0,
+						label: "Quantity issued"
+					},
 					uom: {
 						initialValue: "EA",
 						label: "Unit of measure",
@@ -322,11 +326,15 @@ sap.ui.define([
 				`Material:  ${oData.material} (${oData.description})`,
 				`Quantity required:  ${
 						oData.unlimitedQuantity ? 'unlimited' : oData.quantity
-					} ${oData.uom}`,
+					} ${
+						oData.unlimitedQuantity ? '' : oData.uom
+					}`,
 				`Quantity issued:  ${oData.quantityIssued} ${oData.uom}`,
 				`Quantity remaining:  ${
 						oData.unlimitedQuantity ? 'unlimited' : oData.quantity
-					} ${oData.uom}`,
+					} ${
+						oData.unlimitedQuantity ? '' : oData.uom
+					}`,
 				`Due:  ${oData.dueDate}`,
 				`Contact:  ${oData.enteredByName}`,
 				`Deliver to:  ${oData.deliverTo}`,

@@ -48,6 +48,17 @@
 									</CheckBox>
 								</form:fields>
 							</form:FormElement>
+							<form:FormElement label="{viewModel>/fields/quantityIssued/label}">
+								<form:fields>
+									<Input
+										type="Number"
+										value="{quantityIssued}"
+										change="onItemFieldChange"
+										valueState="{viewModel>/fields/quantityIssued/valueState}"
+										valueStateText="{viewModel>/fields/quantityIssued/valueStateText}">
+									</Input>
+								</form:fields>
+							</form:FormElement>
 							<form:FormElement
 								label="{viewModel>/fields/supplierName/label}"
 								visible="{= ${type} !== 'P'}">
