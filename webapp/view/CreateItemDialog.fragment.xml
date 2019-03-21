@@ -15,8 +15,8 @@
 				class="editableForm">
 				<form:layout>
 					<form:ResponsiveGridLayout
-						labelSpanL="3"
-						labelSpanM="3"
+						labelSpanL="4"
+						labelSpanM="4"
 						emptySpanL="0"
 						emptySpanM="0"
 						columnsL="2"
