@@ -36,8 +36,7 @@ sap.ui.define([
 						initialValue: "",
 						required: item => !item.description,
 						canSearch: true,
-						canSort: true,
-						initialSortPosition: 0
+						canSort: true
 					},
 					description: {
 						label: "Part Description",
@@ -150,7 +149,31 @@ sap.ui.define([
 			this.getView().setModel(this._oViewModel, "viewModel");
 
 			this._initSearchFields();
-			this._initSortFields();
+			
+			// Check if we have default sort values stored in the backend
+			var that = this;
+
+			const oCommonModel = this.getOwnerComponent().getModel("common");
+			this._setBusy(true);
+			oCommonModel.metadataLoaded().then(() => {
+				oCommonModel.read("/AppParameters", {
+					filters: [new Filter({
+						path: "application",
+						operator: FilterOperator.EQ,
+						value1: "URGENT_BOARD"
+					})],
+					success: (oData) => {
+						const oResult = oData.results.find((oRes) => oRes.name === "SORT");
+						
+						that._initSortFields(oResult.value);
+						this._setBusy(false);
+					},
+					error: () => {
+						that._initSortFields();
+						this._setBusy(false);
+					}
+				});
+			});
 		},
 
 		/**
@@ -171,9 +194,22 @@ sap.ui.define([
 		/**
 		 * Builds property 'sort/fields' in view model based on field
 		 * metadata in property '/fields'
+		 * 
+		 * Optional sStartValues => Default sort values (eg on load from backend)
 		 */
-		_initSortFields() {
+		_initSortFields(sStartValues) {
 			var oFields = this._oViewModel.getProperty("/fields");
+			var aStartValues = sStartValues ? sStartValues.split(";") : [];
+			aStartValues = aStartValues.map((sStartValue) => {
+				var aParts = sStartValue.split("(");
+				if (aParts.length < 2) {
+					return "";
+				}
+				return {
+					path: aParts[0],
+					direction: aParts[1][0]
+				};
+			});
 			var aSortFields = Object.entries(oFields)
 				// Filter out unsortable fields
 				.filter(([, oField]) => oField.canSort)
@@ -187,12 +223,35 @@ sap.ui.define([
 					canMoveUp: false, // Will be set in _setSortFieldCanMove()
 					canMoveDown: false // Will be set in _setSortFieldCanMove()
 				}))
+				// Check if a default setting exists
+				.map((oField) => {
+					var startValueIndex = aStartValues.findIndex((o) => o.path === oField.path.toUpperCase());
+					
+					if (startValueIndex >= 0) {
+						oField.sortAscending = aStartValues[startValueIndex].direction === "A";
+						oField.sortDescending = aStartValues[startValueIndex].direction !== "A";
+						oField.initialPosition = startValueIndex;
+					}
+					return oField;
+				})
 				// Sort by initial sort position
-				.sort((oA, oB) => oA.initialPosition - oB.initialPosition)
+				.sort((oA, oB) => {
+					if (typeof oA.initialPosition === "undefined" && typeof oB.initialPosition === "undefined") {
+						return 0;
+					} else if (typeof oA.initialPosition === "undefined") {
+						return 1;
+					} else if (typeof oB.initialPosition === "undefined") {
+						return -1;
+					} else {
+						return oA.initialPosition - oB.initialPosition;
+					}
+				})
 				// Set 'canMoveUp' and 'canMoveDown'
 				.map(this._setSortFieldCanMove);
-			this._oViewModel.setProperty("/sort/fields", aSortFields);
-			this._updateSortActiveFieldCount(aSortFields);
+
+				this._updateTableSort(aSortFields);
+				this._oViewModel.setProperty("/sort/fields", aSortFields);
+				this._updateSortActiveFieldCount(aSortFields);	
 		},
 
 		_setSortFieldCanMove(oField, nIndex, aFields) {
@@ -879,6 +938,8 @@ sap.ui.define([
 			// Some properties need custom sort functions - these are defined below
 			// Date sort is required due to bug in current version of UI5 where 
 			// if a date value is blank the item is not sorted.
+			// Note that this only seems to be a problem with 1.38.6 => seems to be fixed
+			// in future versions
 			const fDateSort = (d1, d2) => {
 				if (d1 === d2) {
 					return 0;
@@ -919,7 +980,36 @@ sap.ui.define([
 			var oBinding = oTable.getBinding("items");
 			oBinding.sort(aSorters);
 			
-
+			// Persist sort settings
+			this._persistSortSettings(aSortFields);
+		},
+		
+		// Save the user's settings choices via the oData service
+		_persistSortSettings(aSortFields) {
+			var model = this.getView().getModel("common");
+			
+			if (!model) {
+				return;
+			}
+			
+			const sSortParams = aSortFields.map((oSortField) => {
+				if (oSortField.sortAscending) {
+					return oSortField.path.toUpperCase() + "(A);";
+				} else if (oSortField.sortDescending) {
+					return oSortField.path.toUpperCase() + "(D);";
+				} else {
+					return "";
+				}
+			}).join("");
+			
+			model.create("/AppParameters",{
+				application: "URGENT_BOARD",
+				name: "SORT",
+				value: sSortParams			
+			});
+			
+			model.metadataLoaded().then(() => model.submitChanges());
+			
 		}
 	});
 });
