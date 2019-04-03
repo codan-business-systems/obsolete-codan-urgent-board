@@ -29,7 +29,7 @@
 									<Input
 										type="Number"
 										value="{quantity}"
-										visible="{= !${unlimitedQuantity} }"
+										enabled="{= !${unlimitedQuantity} }"
 										change="onItemFieldChange"
 										valueState="{viewModel>/fields/quantity/valueState}"
 										valueStateText="{viewModel>/fields/quantity/valueStateText}">
