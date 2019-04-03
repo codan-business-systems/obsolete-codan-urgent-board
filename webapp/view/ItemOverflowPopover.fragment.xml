@@ -61,10 +61,11 @@
 							</form:FormElement>
 							<form:FormElement
 								label="{viewModel>/fields/supplierName/label}"
-								visible="{= ${type} !== 'P'}">
+								>
 								<form:fields>
 									<Input
 										type="Text"
+										editable="{= ${type} !== 'P'}"
 										value="{supplierName}"
 										change="onItemFieldChange"
 										valueState="{viewModel>/fields/supplierName/valueState}"
@@ -73,10 +74,11 @@
 							</form:FormElement>
 							<form:FormElement
 								label="{viewModel>/fields/dueDate/label}"
-								visible="{= ${type} !== 'P'}">
+								>
 								<form:fields>
 									<DatePicker
 										change="onItemFieldChange"
+										editable="{= ${type} !== 'P'}"
 										value="{
 											path:'dueDate',
 											type:'sap.ui.model.type.Date',
