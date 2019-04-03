@@ -56,6 +56,13 @@
 									visible="{= ${viewModel>/selectedCount} === 0 }"
 									tooltip="Sort columns"
 									press="toggleSortSettings"/>
+								<DateRangeSelection 
+									dateValue="{viewModel>/searchDateFrom}"
+									secondDateValue="{viewModel>/searchDateTo}"
+									change="onSearch"
+									width="auto"
+									placeholder="dd/MM/yyyy - dd/MM/yyyy"
+									displayFormat="dd/MM/yyyy"/>
 								<SearchField
 									id="searchField"
 									class="sapUiNoMarginEnd"
@@ -93,7 +100,7 @@
 							<Column id="colContact">
 								<Text text="Contact"/>
 							</Column>
-							<Column id="colDeliverToNotes">
+							<Column id="colDeliverToNotes" width="15rem">
 								<Text text="Deliver to / Notes"/>
 							</Column>
 							<Column>
