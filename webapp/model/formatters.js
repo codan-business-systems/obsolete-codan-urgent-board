@@ -31,7 +31,7 @@ sap.ui.define([
 				if (sLine) {
 					const nLine = Number(sLine);
 					if (nLine) {
-						sText = `${sText}/${Number(sLine)}`;
+						sText = `${sText} / ${Number(sLine)}`;
 					}
 				}
 			}
