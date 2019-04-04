@@ -130,6 +130,12 @@
 					icon="sap-icon://delete"
 					type="Reject"
 					tooltip="Delete item"/>
+				<Button
+					visible="{= !${viewModel>/itemPopover/hasError} }"
+					press="navToGoodsReceipt"
+					icon="sap-icon://supplier"
+					type="Accept"
+					tooltip="Receipt Goods"/>
 				<ToolbarSpacer />
 				<Button
 					visible="{= ${viewModel>/itemPopover/hasError} }"

@@ -45,6 +45,12 @@
 									type="Reject"
 									icon="sap-icon://delete"/>
 								<Button
+									tooltip="{i18n>goodsReceiptSelected}"
+									press="navToGoodsReceiptSelected"
+									visible="{= ${viewModel>/selectedCount} > 0 }"
+									type="Accept"
+									icon="sap-icon://supplier"/>
+								<Button
 									tooltip="{i18n>createNew}"
 									press="showCreateDialog"
 									visible="{= ${viewModel>/selectedCount} === 0 }"
