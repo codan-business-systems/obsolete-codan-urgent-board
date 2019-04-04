@@ -585,12 +585,45 @@ sap.ui.define([
 				this._reopenPopoverPreservingState(oEvent.getSource());
 			}
 		},
+		
+		validateDateRange(event) {
+			if (event.getParameter("valid")) {
+				event.getSource().setValueState(sap.ui.core.ValueState.None);
+				this.onSearch();
+			} else {
+				event.getSource().setValueState(sap.ui.core.ValueState.Error);
+			}
+		},
+		
+		setDueInPast() {
+			this._oViewModel.setProperty("/searchDateFrom", new Date("01/01/2000"));	
+			this._oViewModel.setProperty("/searchDateTo", new Date());
+			this.onSearch();
+		},
+		
+		setDueToday() {
+			this._oViewModel.setProperty("/searchDateFrom", new Date());
+			this.onSearch();
+		},
+		
+		setDueInFuture() {
+			var today = new Date();
+			this._oViewModel.setProperty("/searchDateFrom", new Date());
+			this._oViewModel.setProperty("/searchDateTo", new Date(today.getFullYear() + 2, today.getMonth(), today.getDate()));
+			this.onSearch();
+		},
+		
+		clearDateSelection() {
+			this._oViewModel.setProperty("/searchDateFrom", null);
+			this._oViewModel.setProperty("/searchDateTo", null);
+			this.onSearch();
+		},
 
 		onSearch() {
 			var aSearchFields = this._oViewModel.getProperty("/search/fields");
 			var sSearchValue = this._oViewModel.getProperty("/search/value");
 			var dSearchDateFrom = this._oViewModel.getProperty("/searchDateFrom");
-			var dSearchDateTo = this._oViewModel.getProperty("/searchDateTo");
+			var dSearchDateTo = this._oViewModel.getProperty("/searchDateTo") || new Date(dSearchDateFrom);
 
 			// Build filters for each active search field
 			var aAllFilters = [];
@@ -617,6 +650,9 @@ sap.ui.define([
 			}
 
 			if (dSearchDateFrom) {
+				dSearchDateTo.setHours(23);
+				dSearchDateTo.setMinutes(59);
+				dSearchDateTo.setSeconds(59);
 				aAllFilters.push(new Filter({
 					path: 'dueDate',
 					operator: FilterOperator.BT,

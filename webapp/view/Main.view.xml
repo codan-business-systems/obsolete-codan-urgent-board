@@ -55,14 +55,36 @@
 									icon="sap-icon://sort"
 									visible="{= ${viewModel>/selectedCount} === 0 }"
 									tooltip="Sort columns"
-									press="toggleSortSettings"/>
+									press="toggleSortSettings"
+									type="Emphasized"/>
 								<DateRangeSelection 
 									dateValue="{viewModel>/searchDateFrom}"
 									secondDateValue="{viewModel>/searchDateTo}"
-									change="onSearch"
+									change="validateDateRange"
+									valueStateText="Enter in the format dd/MM/yyyy - dd/MM/yyyy"
 									width="auto"
 									placeholder="dd/MM/yyyy - dd/MM/yyyy"
 									displayFormat="dd/MM/yyyy"/>
+								<Button
+									tooltip="Due In Past"
+									icon="sap-icon://past"
+									press="setDueInPast"
+									type="Emphasized"/>
+								<Button
+									tooltip="Due Today"
+									icon="sap-icon://present"
+									press="setDueToday"
+									type="Emphasized"/>
+								<Button
+									tooltip="Due In Future"
+									icon="sap-icon://future"
+									press="setDueInFuture"
+									type="Emphasized"/>	
+								<Button
+									tooltip="All Dates"
+									icon="sap-icon://history"
+									press="clearDateSelection"
+									type="Emphasized"/>
 								<SearchField
 									id="searchField"
 									class="sapUiNoMarginEnd"
