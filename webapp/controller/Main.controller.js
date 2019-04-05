@@ -163,9 +163,13 @@ sap.ui.define([
 						value1: "URGENT_BOARD"
 					})],
 					success: (oData) => {
-						const oResult = oData.results.find((oRes) => oRes.name === "SORT");
+						const nResultNdx = oData.results.findIndex((oRes) => oRes.name === "SORT");
 						
-						that._initSortFields(oResult.value);
+						if (nResultNdx >= 0) {
+							that._initSortFields(oData.results[nResultNdx].value);
+						} else {
+							that._initSortFields();
+						}
 						this._setBusy(false);
 					},
 					error: () => {
