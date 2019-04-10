@@ -1,11 +1,14 @@
-sap.ui.define([
-], function () {
+sap.ui.define([], function () {
 	"use strict";
 	return {
 		combinedQuantityText(nQuantityRequired, nQuantityIssued, bUnlimitedQuantity) {
-			return `${nQuantityIssued} / ${
+			if (!!nQuantityIssued && Number(nQuantityIssued) > 0) {
+				return `${nQuantityIssued} / ${
 				bUnlimitedQuantity ? "∞" : nQuantityRequired
 			}`;
+			} else {
+				return bUnlimitedQuantity ? "∞" : nQuantityRequired;
+			}
 		},
 		deliverToAndNotesText(sDeliverTo, sNotes) {
 			const truncNotesToLen = 40;
@@ -31,30 +34,30 @@ sap.ui.define([
 				if (sLine) {
 					const nLine = Number(sLine);
 					if (nLine) {
-						sText = `${sText}/${Number(sLine)}`;
+						sText = `${sText} / ${Number(sLine)}`;
 					}
 				}
 			}
 			return sText;
 		},
-		
+
 		typeIconSrc(sType) {
 			let sSrc;
 			switch (sType) {
-				case "P":
-					// Purchase Order
-					sSrc = "sap-icon://shelf";
-					break;
-				case "S":
-					// Sales Order
-					sSrc = "sap-icon://sales-order-item";
-					break;
-				case "D":
-					// Production Order
-					sSrc = "sap-icon://factory";
-					break;
-				default:
-					sSrc = "sap-icon://question-mark";
+			case "P":
+				// Purchase Order
+				sSrc = "sap-icon://shelf";
+				break;
+			case "S":
+				// Sales Order
+				sSrc = "sap-icon://sales-order-item";
+				break;
+			case "D":
+				// Production Order
+				sSrc = "sap-icon://factory";
+				break;
+			default:
+				sSrc = "sap-icon://question-mark";
 			}
 			return sSrc;
 		},

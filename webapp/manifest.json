@@ -20,6 +20,10 @@
 				"settings": {
 					"localUri": "localService/metadata.xml"
 				}
+			},
+			"Z_COMMON_SRV": {
+				"uri": "/sap/opu/odata/sap/Z_COMMON_SRV/",
+				"type": "OData"
 			}
 		}
 	},
@@ -51,9 +55,9 @@
 		"dependencies": {
 			"minUI5Version": "1.30.0",
 			"libs": {
-				"sap.ui.layout": {},
+				"sap.m": {},
 				"sap.ui.core": {},
-				"sap.m": {}
+				"sap.ui.layout": {}
 			}
 		},
 		"contentDensities": {
@@ -75,6 +79,16 @@
 					"defaultCountMode": "Request"
 				},
 				"dataSource": "Z_URGENT_BOARD_SRV",
+				"preload": true
+			},
+			"common": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Server",
+					"defaultBindingMode": "OneWay",
+					"defaultCountMode": "Request"
+				},
+				"dataSource": "Z_COMMON_SRV",
 				"preload": true
 			}
 		},
